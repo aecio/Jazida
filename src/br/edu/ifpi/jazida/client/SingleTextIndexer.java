@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida;
+package br.edu.ifpi.jazida.client;
 
 
 import java.io.IOException;
