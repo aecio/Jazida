@@ -43,9 +43,7 @@ public class TextIndexerServer implements IOpalaTextIndexer {
 	public IntWritable addText(MetaDocumentWrapper metaDocWrapper, Text content) {
 		MetaDocument metaDocument = metaDocWrapper.getMetaDoc();
 		
-		System.out.println("\nMetaDocument Title: " + metaDocument.getTitle());
-		System.out.println("\nMetaDocument Author: " + metaDocument.getAuthor());
-		System.out.println("Conteúdo: " + content);
+		System.out.println("\nMetaDocument ID: " + metaDocument.getId());
 		
 		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
 		ReturnMessage result = indexer.addText(metaDocument, content.toString());
