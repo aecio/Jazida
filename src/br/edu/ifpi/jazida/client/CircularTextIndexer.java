@@ -118,6 +118,7 @@ class IndexerThread implements Runnable {
 	private synchronized static File nextDocument() {
 		atual++;
 		if (atual < arquivos.length) {
+			System.out.println("Arquivo: "+atual+"/"+arquivos.length);
 			return arquivos[atual];
 		} else {
 			return null;
