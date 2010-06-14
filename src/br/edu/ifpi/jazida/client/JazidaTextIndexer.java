@@ -40,7 +40,6 @@ public class JazidaTextIndexer {
 			enderecosSocket[s] = new InetSocketAddress(servers[s], 16000);
 		}
 		
-		
 		File arquivo = nextDocument();
 		while( arquivo != null ) {
 			
