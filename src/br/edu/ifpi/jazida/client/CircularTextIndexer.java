@@ -94,6 +94,9 @@ class IndexerThread implements Runnable {
 				while ((line = reader.readLine()) != null) {
 					stringBuffer.append(line);
 				}
+				reader.close();
+				streamReader.close();
+				stream.close();
 				
 				// Indexar documento
 				IntWritable code = client.addText(
