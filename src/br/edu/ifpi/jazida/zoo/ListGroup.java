@@ -4,16 +4,19 @@ import java.util.List;
 
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.Configuration;
+
 public class ListGroup extends ConnectionWatcher {
 	public void list(String groupName) throws KeeperException, InterruptedException {
-		String path = "/"+groupName;
+		String path = Configuration.DATANODES_PATH;
 		try{
-			List<String> children = zk.getChildren(path, false);
-			if(children.isEmpty()){
+			List<String> datanodes = zk.getChildren(path, false);
+			
+			if(datanodes.isEmpty()){
 				System.out.println("Nenhum mebro no grupo "+groupName+" encontrado");
 				System.exit(1);
 			}
-			for (String child : children) {
+			for (String child : datanodes) {
 				System.out.println(child);
 			}
 		}catch (KeeperException.NoNodeException e) {

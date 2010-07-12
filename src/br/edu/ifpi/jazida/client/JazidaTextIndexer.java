@@ -11,14 +11,14 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.api.IOpalaTextIndexer;
+import br.edu.ifpi.jazida.api.IJazidaTextIndexer;
 import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class JazidaTextIndexer {
 
 	static String[] servers = { "mario-desktop", "luigi-desktop", "monica-desktop"};
-	static IOpalaTextIndexer[] clientes;
+	static IJazidaTextIndexer[] clientes;
 	
 	private static File pasta = new File("/home/yoshi/dados-teste/mil-txt");
 	private static File[] arquivos = pasta.listFiles();
@@ -31,7 +31,7 @@ public class JazidaTextIndexer {
 		
 		try {
 	
-		clientes = new IOpalaTextIndexer[servers.length];
+		clientes = new IJazidaTextIndexer[servers.length];
 		Configuration configuracao = new Configuration();
 		InetSocketAddress[] enderecosSocket = new InetSocketAddress[servers.length];
 		
@@ -76,7 +76,7 @@ public class JazidaTextIndexer {
 			Class<?>[] parametrosMetodos = {MetaDocumentWrapper.class, Text.class};
 			
 			
-			Object[] resposta = RPC.call(   IOpalaTextIndexer.class.getMethod("addText", parametrosMetodos),
+			Object[] resposta = RPC.call(IJazidaTextIndexer.class.getMethod("addText", parametrosMetodos),
 						parametrosEnviados,
 						enderecosSocket,
 						configuracao);

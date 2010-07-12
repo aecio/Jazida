@@ -6,12 +6,13 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.Writable;
 
+import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class MetaDocumentWrapper extends MetaDocument implements Writable {
 
 	private static final long serialVersionUID = 1L;
-	private MetaDocument metaDoc;
+	private MetaDocument metaDocument;
 
 	public MetaDocumentWrapper() {
 	}
@@ -20,12 +21,12 @@ public class MetaDocumentWrapper extends MetaDocument implements Writable {
 		this.setMetaDoc(metaDocument);
 	}
 
-	public void setMetaDoc(MetaDocument metaDoc) {
-		this.metaDoc = metaDoc;
+	public void setMetaDoc(MetaDocument metaDocument) {
+		this.metaDocument = metaDocument;
 	}
 
 	public MetaDocument getMetaDoc() {
-		return metaDoc;
+		return metaDocument;
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class MetaDocumentWrapper extends MetaDocument implements Writable {
 			metaDocBytes[i] = in.readByte();
 		}
 		try {
-			metaDoc = (MetaDocument) Serializer.toObject(metaDocBytes, 0);
+			metaDocument = (MetaDocument) Serializer.toObject(metaDocBytes, 0);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Erro ao reconstruir o objeto!");
 		}
@@ -44,7 +45,7 @@ public class MetaDocumentWrapper extends MetaDocument implements Writable {
 
 	@Override
 	public void write(DataOutput out) throws IOException {
-		byte[] metaDocBytes = Serializer.fromObject(metaDoc);
+		byte[] metaDocBytes = Serializer.fromObject(metaDocument);
 		int size = metaDocBytes.length;
 
 		out.writeInt(size);

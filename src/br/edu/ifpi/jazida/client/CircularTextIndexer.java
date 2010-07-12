@@ -13,11 +13,12 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.api.IOpalaTextIndexer;
+import br.edu.ifpi.jazida.api.IJazidaTextIndexer;
 import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 class CircularTextIndexer {
+
 
 	static String[] servers = { "monica-desktop", "monica-desktop",
 							"mario-desktop", "mario-desktop",
@@ -34,8 +35,8 @@ class CircularTextIndexer {
 			String host = servers[i];
 			InetSocketAddress addr = new InetSocketAddress(host, 16000);
 			System.out.println("Criando  cliente para "+servers[i]);
-			IOpalaTextIndexer opalaClient = (IOpalaTextIndexer) RPC.waitForProxy (
-					IOpalaTextIndexer.class, IOpalaTextIndexer.versionID, addr, conf);
+			IJazidaTextIndexer opalaClient = (IJazidaTextIndexer) RPC.getProxy (
+					IJazidaTextIndexer.class, IJazidaTextIndexer.versionID, addr, conf);
 			
 			Thread indexer = new Thread((Runnable) new IndexerThread(i, opalaClient));
 			threads[i] = indexer;
@@ -54,14 +55,14 @@ class CircularTextIndexer {
 class IndexerThread implements Runnable {
 	
 	private static CountDownLatch connectedSignal;
-	private IOpalaTextIndexer client;
+	private IJazidaTextIndexer client;
 	private int threadId;
 	private static int runningThreads = 0;
 	private static File pasta = new File("/home/yoshi/dados-teste/mil-txt");
 	private static File[] arquivos = pasta.listFiles();
 	private static int atual = -1;
 	
-	public IndexerThread(int threadId, IOpalaTextIndexer client) {
+	public IndexerThread(int threadId, IJazidaTextIndexer client) {
 		this.client = client;
 		this.threadId = threadId;
 		runningThreads++;

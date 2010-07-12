@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.wrapper;
+package br.edu.ifpi.jazida.util;
 
 
 import java.io.ByteArrayInputStream;
@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-class Serializer {
+public class Serializer {
 
 	public static Object toObject(byte[] bytes, int start)
 	throws IOException, ClassNotFoundException {
