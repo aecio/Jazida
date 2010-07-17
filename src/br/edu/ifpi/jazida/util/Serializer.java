@@ -9,7 +9,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Serializer {
-
+	
+	public static Object toObject(byte[] bytes)
+	throws IOException, ClassNotFoundException {
+		return Serializer.toObject(bytes, 0);
+	}
+	
 	public static Object toObject(byte[] bytes, int start)
 	throws IOException, ClassNotFoundException {
 

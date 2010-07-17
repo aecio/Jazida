@@ -13,7 +13,6 @@ import org.apache.hadoop.ipc.RPC.Server;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 
-import br.edu.ifpi.jazida.api.IJazidaTextIndexer;
 import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
 import br.edu.ifpi.opala.indexing.TextIndexer;
 import br.edu.ifpi.opala.indexing.TextIndexerImpl;

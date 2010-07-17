@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.api;
+package br.edu.ifpi.jazida.node;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
