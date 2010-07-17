@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida;
+package br.edu.ifpi.jazida.util;
 
 public class Configuration {
 	public static final String DATANODES_PATH;

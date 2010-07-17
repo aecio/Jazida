@@ -8,7 +8,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
-import br.edu.ifpi.jazida.Configuration;
+import br.edu.ifpi.jazida.util.Configuration;
 import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.zoo.ConnectionWatcher;
 
@@ -27,13 +27,14 @@ public class DataNode extends ConnectionWatcher {
 		
 		super.connect(Configuration.ZOOKEEPER_SERVERS);
 
-		NodeStatus status = new NodeStatus();
-		status.setHostname(InetAddress.getLocalHost().getHostName());
-		status.setAddress(InetAddress.getLocalHost().getAddress().toString());
+		NodeStatus node = new NodeStatus();
+		node.setHostname(InetAddress.getLocalHost().getHostName());
+		node.setAddress(InetAddress.getLocalHost().getHostAddress());
+		node.setPort(16000);
 
 		String path = Configuration.DATANODES_PATH +"/"+ InetAddress.getLocalHost().getHostName();
 		String createdPath = zk.create( path,
-										Serializer.fromObject(status),
+										Serializer.fromObject(node),
 										Ids.OPEN_ACL_UNSAFE,
 										CreateMode.EPHEMERAL);
 		
@@ -42,7 +43,7 @@ public class DataNode extends ConnectionWatcher {
 		LOG.info("Agora, vou iniciar o servidor IPC/RPC");
 		LOG.info("----------------------------------------");
 		
-		server = new TextIndexerServer(InetAddress.getLocalHost().getHostName());
+		server = new TextIndexerServer(node.getHostname(), node.getPort());
 		server.start();
 	}
 

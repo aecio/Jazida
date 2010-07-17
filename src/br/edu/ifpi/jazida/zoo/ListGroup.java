@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.zookeeper.KeeperException;
 
-import br.edu.ifpi.jazida.Configuration;
+import br.edu.ifpi.jazida.util.Configuration;
 
 public class ListGroup extends ConnectionWatcher {
 	public void list(String groupName) throws KeeperException, InterruptedException {

@@ -15,6 +15,7 @@ public class NodeStatus implements Serializable {
 
 	private String hostname;
 	private String address; // Endereço IP do host
+	private int port;
 
 	public String getHostname() {
 		return hostname;
@@ -24,12 +25,20 @@ public class NodeStatus implements Serializable {
 		this.hostname = hostname;
 	}
 
-	public String getIp() {
+	public String getAddress() {
 		return address;
 	}
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public int getPort() {
+		return port;
 	}
 
 	@Override

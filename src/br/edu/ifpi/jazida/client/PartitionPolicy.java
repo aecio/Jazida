@@ -1,5 +1,5 @@
 package br.edu.ifpi.jazida.client;
 
-public interface PartitionPolicy {
-	public String nextNode();
+public interface PartitionPolicy<T> {
+	public T nextNode();
 }

@@ -23,7 +23,7 @@ public class TextIndexerServer implements IJazidaTextIndexer {
 
 	public static void main(String[] args) throws InterruptedException {
 		try {
-			TextIndexerServer server = new TextIndexerServer("monica-desktop");
+			TextIndexerServer server = new TextIndexerServer("monica-desktop", 16000);
 			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -37,9 +37,9 @@ public class TextIndexerServer implements IJazidaTextIndexer {
 		_server.join();
 	}
 
-	public TextIndexerServer(String serverName) throws IOException {
+	public TextIndexerServer(String serverName, int port) throws IOException {
 		Configuration conf = new Configuration();
-		_server = RPC.getServer(this, serverName, 16000, conf);
+		_server = RPC.getServer(this, serverName, port, conf);
 	}
 
 	@Override
