@@ -18,7 +18,7 @@ public class DataNode extends ConnectionWatcher {
 	Integer mutex = new Integer(0);
 	private TextIndexerServer server;
 
-	public void start() throws IOException, InterruptedException,
+	public void start(boolean lock) throws IOException, InterruptedException,
 			KeeperException {
 		
 		LOG.info("-----------------------------------");
@@ -44,11 +44,11 @@ public class DataNode extends ConnectionWatcher {
 		LOG.info("----------------------------------------");
 		
 		server = new TextIndexerServer(node.getHostname(), node.getPort());
-		server.start();
+		server.start(lock);
 	}
 
 	public static void main(String[] args) throws IOException,
 			InterruptedException, KeeperException {
-		new DataNode().start();
+		new DataNode().start(true);
 	}
 }

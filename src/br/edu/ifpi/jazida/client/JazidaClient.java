@@ -58,7 +58,7 @@ public class JazidaClient extends ConnectionWatcher {
 		MetaDocumentWrapper documentWrap = new MetaDocumentWrapper(metaDocument);
 		NodeStatus node = partitionPolicy.nextNode();
 
-		LOG.info("Indexando documento em " + node.getHostname());
+		LOG.info(node.getHostname() + ": documento indexado: "+metaDocument.getId());
 
 		IJazidaTextIndexer proxy = clientes.get(node.getHostname());
 		IntWritable result = proxy.addText(documentWrap, new Text(content));

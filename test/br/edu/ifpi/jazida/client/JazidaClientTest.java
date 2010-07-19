@@ -1,5 +1,7 @@
 package br.edu.ifpi.jazida.client;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,72 +9,56 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.zookeeper.KeeperException;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.edu.ifpi.jazida.node.DataNode;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
+/**
+ * Teste para {@link JazidaClient}. Para funcionar, os Serviço do Zookeeper deve
+ * estar iniciado.
+ * 
+ * @author Aécio Solano Rodrigues Santos
+ */
 public class JazidaClientTest {
-	
+
+	private static DataNode datanode;
 	private JazidaClient jazidaClient;
 
-	@Before
-	public void setUp() throws KeeperException, InterruptedException, IOException {
-		jazidaClient = new JazidaClient();
+	@BeforeClass
+	public static void setUpTest() throws KeeperException,
+			InterruptedException, IOException {
+		datanode = new DataNode();
+		datanode.start(false);
 	}
 
-	private static File pasta = new File("/home/aecio/workspace/lapesi/dez-mil-txt");
-	private static File[] arquivos = pasta.listFiles();
-	private static int atual = -1;
-	
 	@Test
-	public void testAddText() {
-	
-		File arquivo = nextDocument();
-		while (arquivo != null) {
-			try {
-				MetaDocument metadoc = new MetaDocument();
-				metadoc.setTitle(arquivo.getName());
-				metadoc.setId(arquivo.getName());
-				
-				// Ler conteúdo do arquivo
-				FileInputStream stream;
-				stream = new FileInputStream(arquivo);
-				InputStreamReader streamReader = new InputStreamReader(
-						stream);
-				BufferedReader reader = new BufferedReader(streamReader);
-				
-				StringBuffer stringBuffer = new StringBuffer();
-				String line;
-				while ((line = reader.readLine()) != null) {
-					stringBuffer.append(line);
-				}
-				reader.close();
-				streamReader.close();
-				stream.close();
-				
-				// Indexar documento
-				int code = jazidaClient.addText(metadoc, stringBuffer.toString());
-				
-				System.out.println("ResultCode: "+code);
-				
-			} catch (Exception e) {
-				System.out.println("Erro ao indexar arquivo...");
-				e.printStackTrace();
-				System.exit(1);
-			}
-			arquivo = nextDocument();
+	public void testAddText() throws KeeperException, InterruptedException,
+			IOException {
+		jazidaClient = new JazidaClient();
+		File arquivo = new File("./sample-data/texts/alice.txt");
+
+		MetaDocument metadoc = new MetaDocument();
+		metadoc.setAuthor("Lewis Carroll");
+		metadoc.setTitle("Alice's Adventures in Wonderland");
+		metadoc.setId(arquivo.getName());
+
+		// Ler conteúdo do arquivo
+		InputStreamReader streamReader = new InputStreamReader(
+				new FileInputStream(arquivo));
+		BufferedReader reader = new BufferedReader(streamReader);
+		StringBuffer stringBuffer = new StringBuffer();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			stringBuffer.append(line);
 		}
-		
-	}
-	
-	private synchronized static File nextDocument() {
-		atual++;
-		if (atual < arquivos.length) {
-			System.out.println("Arquivo: "+atual+"/"+arquivos.length);
-			return arquivos[atual];
-		} else {
-			return null;
-		}
+		reader.close();
+		streamReader.close();
+
+		// Indexar documento
+		Integer code = jazidaClient.addText(metadoc, stringBuffer.toString());
+		assertNotNull(code);
+
 	}
 }

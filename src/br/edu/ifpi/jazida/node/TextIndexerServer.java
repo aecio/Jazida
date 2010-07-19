@@ -3,6 +3,7 @@ package br.edu.ifpi.jazida.node;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
@@ -21,36 +22,34 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
 
 public class TextIndexerServer implements IJazidaTextIndexer {
 
+	private Server server;
+	
 	public static void main(String[] args) throws InterruptedException {
 		try {
-			TextIndexerServer server = new TextIndexerServer("monica-desktop", 16000);
-			server.start();
+			TextIndexerServer server = new TextIndexerServer(InetAddress.getLocalHost().getHostName(), 16000);
+			server.start(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private Server _server;
-
-	public void start() throws IOException, InterruptedException {
-		_server.start();
-		_server.join();
+	public void start(boolean lock) throws IOException, InterruptedException {
+		server.start();
+		if (lock) {
+			server.join();
+		}
 	}
 
 	public TextIndexerServer(String serverName, int port) throws IOException {
 		Configuration conf = new Configuration();
-		_server = RPC.getServer(this, serverName, port, conf);
+		server = RPC.getServer(this, serverName, port, conf);
 	}
 
 	@Override
 	public IntWritable addText(MetaDocumentWrapper metaDocWrapper, Text content) {
 		MetaDocument metaDocument = metaDocWrapper.getMetaDoc();
-		
-		System.out.println("\nMetaDocument ID: " + metaDocument.getId());
-		
 		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
 		ReturnMessage result = indexer.addText(metaDocument, content.toString());
-
 		return new IntWritable(result.getCode());
 	}
 
