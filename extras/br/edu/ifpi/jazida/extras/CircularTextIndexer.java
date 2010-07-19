@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.client;
+package br.edu.ifpi.jazida.extras;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,8 +13,8 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.node.IJazidaTextIndexer;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
+import br.edu.ifpi.jazida.node.ITextIndexerServer;
+import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 class CircularTextIndexer {
@@ -35,8 +35,8 @@ class CircularTextIndexer {
 			String host = servers[i];
 			InetSocketAddress addr = new InetSocketAddress(host, 16000);
 			System.out.println("Criando  cliente para "+servers[i]);
-			IJazidaTextIndexer opalaClient = (IJazidaTextIndexer) RPC.getProxy (
-					IJazidaTextIndexer.class, IJazidaTextIndexer.versionID, addr, conf);
+			ITextIndexerServer opalaClient = (ITextIndexerServer) RPC.getProxy (
+					ITextIndexerServer.class, ITextIndexerServer.versionID, addr, conf);
 			
 			Thread indexer = new Thread((Runnable) new IndexerThread(i, opalaClient));
 			threads[i] = indexer;
@@ -55,14 +55,14 @@ class CircularTextIndexer {
 class IndexerThread implements Runnable {
 	
 	private static CountDownLatch connectedSignal;
-	private IJazidaTextIndexer client;
+	private ITextIndexerServer client;
 	private int threadId;
 	private static int runningThreads = 0;
 	private static File pasta = new File("/home/yoshi/dados-teste/mil-txt");
 	private static File[] arquivos = pasta.listFiles();
 	private static int atual = -1;
 	
-	public IndexerThread(int threadId, IJazidaTextIndexer client) {
+	public IndexerThread(int threadId, ITextIndexerServer client) {
 		this.client = client;
 		this.threadId = threadId;
 		runningThreads++;
@@ -101,7 +101,7 @@ class IndexerThread implements Runnable {
 				
 				// Indexar documento
 				IntWritable code = client.addText(
-						new MetaDocumentWrapper(metadoc),
+						new MetaDocumentWritable(metadoc),
 						new Text(stringBuffer.toString()) );
 				
 				System.out.println("Thread #"+threadId+" - "+code);

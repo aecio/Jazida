@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.client;
+package br.edu.ifpi.jazida.extras;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,8 +12,8 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.node.IJazidaTextIndexer;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
+import br.edu.ifpi.jazida.node.ITextIndexerServer;
+import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class SingleTextIndexer {
@@ -29,8 +29,8 @@ public class SingleTextIndexer {
 		Configuration conf = new Configuration();
 		InetSocketAddress addr = new InetSocketAddress("monica-desktop", 16000);
 
-		IJazidaTextIndexer client = (IJazidaTextIndexer) RPC.waitForProxy(
-				IJazidaTextIndexer.class, IJazidaTextIndexer.versionID, addr,
+		ITextIndexerServer client = (ITextIndexerServer) RPC.waitForProxy(
+				ITextIndexerServer.class, ITextIndexerServer.versionID, addr,
 				conf);
 
 		File arquivo = nextDocument();
@@ -53,7 +53,7 @@ public class SingleTextIndexer {
 			}
 
 			// Indexar documento
-			IntWritable code = client.addText(new MetaDocumentWrapper(metadoc),
+			IntWritable code = client.addText(new MetaDocumentWritable(metadoc),
 					new Text(stringBuffer.toString()));
 
 			System.out.println(code);

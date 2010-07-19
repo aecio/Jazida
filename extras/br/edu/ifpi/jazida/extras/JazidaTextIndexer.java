@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.client;
+package br.edu.ifpi.jazida.extras;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,14 +11,14 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.node.IJazidaTextIndexer;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
+import br.edu.ifpi.jazida.node.ITextIndexerServer;
+import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class JazidaTextIndexer {
 
 	static String[] servers = { "mario-desktop", "luigi-desktop", "monica-desktop"};
-	static IJazidaTextIndexer[] clientes;
+	static ITextIndexerServer[] clientes;
 	
 	private static File pasta = new File("/home/yoshi/dados-teste/mil-txt");
 	private static File[] arquivos = pasta.listFiles();
@@ -31,7 +31,7 @@ public class JazidaTextIndexer {
 		
 		try {
 	
-		clientes = new IJazidaTextIndexer[servers.length];
+		clientes = new ITextIndexerServer[servers.length];
 		Configuration configuracao = new Configuration();
 		InetSocketAddress[] enderecosSocket = new InetSocketAddress[servers.length];
 		
@@ -65,7 +65,7 @@ public class JazidaTextIndexer {
 						stringBuffer.append(line);
 					}
 	
-					parametrosEnviados[s][0] = new MetaDocumentWrapper(metadoc);
+					parametrosEnviados[s][0] = new MetaDocumentWritable(metadoc);
 					parametrosEnviados[s][1] = new Text(stringBuffer.toString());
 					
 				}
@@ -73,10 +73,10 @@ public class JazidaTextIndexer {
 				arquivo = nextDocument();
 			}
 			
-			Class<?>[] parametrosMetodos = {MetaDocumentWrapper.class, Text.class};
+			Class<?>[] parametrosMetodos = {MetaDocumentWritable.class, Text.class};
 			
 			
-			Object[] resposta = RPC.call(IJazidaTextIndexer.class.getMethod("addText", parametrosMetodos),
+			Object[] resposta = RPC.call(ITextIndexerServer.class.getMethod("addText", parametrosMetodos),
 						parametrosEnviados,
 						enderecosSocket,
 						configuracao);

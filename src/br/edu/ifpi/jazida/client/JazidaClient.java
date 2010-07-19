@@ -13,11 +13,11 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
-import br.edu.ifpi.jazida.node.IJazidaTextIndexer;
+import br.edu.ifpi.jazida.node.ITextIndexerServer;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.ZookeeperService;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
-import br.edu.ifpi.jazida.zoo.ConnectionWatcher;
+import br.edu.ifpi.jazida.util.ConnectionWatcher;
+import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class JazidaClient extends ConnectionWatcher {
@@ -25,7 +25,7 @@ public class JazidaClient extends ConnectionWatcher {
 	private static final Logger LOG = Logger.getLogger(JazidaClient.class);
 	private static PartitionPolicy<NodeStatus> partitionPolicy;
 	private List<NodeStatus> datanodes;
-	private Map<String, IJazidaTextIndexer> clientes = new HashMap<String, IJazidaTextIndexer>();
+	private Map<String, ITextIndexerServer> clientes = new HashMap<String, ITextIndexerServer>();
 	private ZookeeperService zkService = new ZookeeperService();
 	private final Configuration hadoopConf = new Configuration();
 
@@ -43,8 +43,8 @@ public class JazidaClient extends ConnectionWatcher {
 			final InetSocketAddress endereco = new InetSocketAddress(node
 					.getHostname(), node.getPort());
 
-			IJazidaTextIndexer opalaClient = (IJazidaTextIndexer) RPC.getProxy(
-					IJazidaTextIndexer.class, IJazidaTextIndexer.versionID,
+			ITextIndexerServer opalaClient = (ITextIndexerServer) RPC.getProxy(
+					ITextIndexerServer.class, ITextIndexerServer.versionID,
 					endereco, hadoopConf);
 
 			clientes.put(node.getHostname(), opalaClient);
@@ -55,12 +55,12 @@ public class JazidaClient extends ConnectionWatcher {
 
 	public int addText(MetaDocument metaDocument, String content)
 			throws IOException {
-		MetaDocumentWrapper documentWrap = new MetaDocumentWrapper(metaDocument);
+		MetaDocumentWritable documentWrap = new MetaDocumentWritable(metaDocument);
 		NodeStatus node = partitionPolicy.nextNode();
 
 		LOG.info(node.getHostname() + ": documento indexado: "+metaDocument.getId());
 
-		IJazidaTextIndexer proxy = clientes.get(node.getHostname());
+		ITextIndexerServer proxy = clientes.get(node.getHostname());
 		IntWritable result = proxy.addText(documentWrap, new Text(content));
 
 		return result.get();

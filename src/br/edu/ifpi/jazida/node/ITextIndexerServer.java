@@ -10,7 +10,7 @@ import org.apache.hadoop.ipc.VersionedProtocol;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWrapper;
+import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
 /**
@@ -18,7 +18,7 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
  * @author Aécio Santos
  *
  */
-public interface IJazidaTextIndexer extends VersionedProtocol {
+public interface ITextIndexerServer extends VersionedProtocol {
 
 	public static final long versionID = 0;
 
@@ -29,7 +29,7 @@ public interface IJazidaTextIndexer extends VersionedProtocol {
 	 * @param content O conteúdo do texto a ser indexado
 	 * @return status Código de sucesso ou erro de acordo com a Enum {@link ReturnMessage}
 	 */
-	public IntWritable addText(MetaDocumentWrapper metaDocument, Text content);
+	public IntWritable addText(MetaDocumentWritable metaDocument, Text content);
 	
 	/**
 	 * Assinatura para o método que remove o texto do índice.

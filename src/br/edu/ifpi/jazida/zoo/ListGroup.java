@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.util.Configuration;
+import br.edu.ifpi.jazida.util.ConnectionWatcher;
 
 public class ListGroup extends ConnectionWatcher {
 	public void list(String groupName) throws KeeperException, InterruptedException {

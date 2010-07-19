@@ -9,15 +9,15 @@ import org.apache.hadoop.io.Writable;
 import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
-public class MetaDocumentWrapper extends MetaDocument implements Writable {
+public class MetaDocumentWritable implements Writable {
 
 	private static final long serialVersionUID = 1L;
 	private MetaDocument metaDocument;
 
-	public MetaDocumentWrapper() {
+	public MetaDocumentWritable() {
 	}
 
-	public MetaDocumentWrapper(MetaDocument metaDocument) {
+	public MetaDocumentWritable(MetaDocument metaDocument) {
 		this.setMetaDoc(metaDocument);
 	}
 

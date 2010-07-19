@@ -6,6 +6,8 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
+import br.edu.ifpi.jazida.util.ConnectionWatcher;
+
 public class JoinGroup extends ConnectionWatcher {
 	
 	public void join(String groupName, String memberName) throws KeeperException, InterruptedException {

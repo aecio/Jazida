@@ -8,13 +8,22 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.util.Configuration;
+import br.edu.ifpi.jazida.util.ConnectionWatcher;
 import br.edu.ifpi.jazida.util.Serializer;
-import br.edu.ifpi.jazida.zoo.ConnectionWatcher;
 
+/**
+ * Realiza a conexão do Jazida com o serviço do Zookeeper.
+ * 
+ * @author Aécio Solano Rodrigues Santos
+ *
+ */
 public class ZookeeperService extends ConnectionWatcher {
 	
 	private static final Logger LOG = Logger.getLogger(ZookeeperService.class);
 	
+	/**
+	 * Construtor padrão. Conecta-se aos servidores do Zookeeper listados em {@link Configuration}.
+	 */
 	public ZookeeperService(){
 		LOG.info("-----------------------------------");
 		LOG.info("Conectando-se ao ZookeeperService...");
@@ -26,7 +35,15 @@ public class ZookeeperService extends ConnectionWatcher {
 		LOG.info("Conectado.");
 		LOG.info("-----------------------------------");
 	}
-
+	
+	/**
+	 * Lista os datanodes conectados no momento ao ZookeeperService.
+	 * 
+	 * @return
+	 * @throws KeeperException
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
 	public List<NodeStatus> getDataNodes() throws KeeperException, InterruptedException, IOException {
 		
 		List<String> nodesIds = zk.getChildren(Configuration.DATANODES_PATH, false);
@@ -47,4 +64,5 @@ public class ZookeeperService extends ConnectionWatcher {
 		}
 		return datanodes;
 	}
+	
 }

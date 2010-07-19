@@ -2,6 +2,7 @@ package br.edu.ifpi.jazida.node;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
@@ -9,28 +10,92 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
 import br.edu.ifpi.jazida.util.Configuration;
+import br.edu.ifpi.jazida.util.ConnectionWatcher;
 import br.edu.ifpi.jazida.util.Serializer;
-import br.edu.ifpi.jazida.zoo.ConnectionWatcher;
 
+/**
+ * Representa um nó conectado ao cluster Jazida.
+ * @author aecio
+ *
+ */
 public class DataNode extends ConnectionWatcher {
 
-	Logger LOG = Logger.getLogger(DataNode.class);
-	Integer mutex = new Integer(0);
+	private Logger LOG = Logger.getLogger(DataNode.class);
 	private TextIndexerServer server;
+	
+	
+	/**
+	 * Inicia um {@link DataNode} com configurações do host local.
+	 * @param args
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws KeeperException
+	 */
+	public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
+		new DataNode().start();
+	}
 
-	public void start(boolean lock) throws IOException, InterruptedException,
-			KeeperException {
+	/**
+	 * Inicia um {@link DataNode} com configurações do host local.
+	 * 
+	 * @param lock - Se a execução será bloqueada após a inicialização do {@link DataNode}.
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws KeeperException
+	 */
+	public void start(boolean lock)
+	throws UnknownHostException, IOException, InterruptedException, KeeperException{
+		
+		this.start( InetAddress.getLocalHost().getHostName(),
+					InetAddress.getLocalHost().getHostAddress(), 
+					Configuration.DEFAULT_PORT,
+					lock);
+	}
+	
+	
+	/**
+	 * Inicia um {@link DataNode} com configurações do host local.
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws KeeperException
+	 */
+	public void start()
+	throws UnknownHostException, IOException, InterruptedException, KeeperException{
+		
+		this.start( InetAddress.getLocalHost().getHostName(),
+					InetAddress.getLocalHost().getHostAddress(), 
+					Configuration.DEFAULT_PORT,
+					true);
+	}
+	
+	
+	/**
+	 * Inicia um {@link DataNode} de acordo com os parâmetros recebidos.
+	 * 
+	 * @param hostName O nome do host em que o DataNode está sendo iniciado.
+	 * @param hostAddress O endereço IP do host.
+	 * @param port O número da porta que o servidor escutará requisições.
+	 * @param lock Se a execução será bloqueada após o inicialização do {@link DataNode}
+	 * 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws KeeperException
+	 */
+	public void start(String hostName, String hostAddress, int port, boolean lock)
+	throws IOException, InterruptedException, KeeperException {
 		
 		LOG.info("-----------------------------------");
-		LOG.info("Conectando-se ao Zookeeper Service");
+		LOG.info("Conectando-se ao Zookeeper Service...");
 		LOG.info("-----------------------------------");
 		
 		super.connect(Configuration.ZOOKEEPER_SERVERS);
 
 		NodeStatus node = new NodeStatus();
-		node.setHostname(InetAddress.getLocalHost().getHostName());
-		node.setAddress(InetAddress.getLocalHost().getHostAddress());
-		node.setPort(16000);
+		node.setHostname(hostName);
+		node.setAddress(hostAddress);
+		node.setPort(port);
 
 		String path = Configuration.DATANODES_PATH +"/"+ InetAddress.getLocalHost().getHostName();
 		String createdPath = zk.create( path,
@@ -45,10 +110,5 @@ public class DataNode extends ConnectionWatcher {
 		
 		server = new TextIndexerServer(node.getHostname(), node.getPort());
 		server.start(lock);
-	}
-
-	public static void main(String[] args) throws IOException,
-			InterruptedException, KeeperException {
-		new DataNode().start(true);
 	}
 }
