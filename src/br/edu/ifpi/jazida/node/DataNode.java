@@ -96,6 +96,11 @@ public class DataNode extends ConnectionWatcher {
 		node.setHostname(hostName);
 		node.setAddress(hostAddress);
 		node.setPort(port);
+		
+		if (zk.exists(Configuration.DATANODES_PATH, false) == null){
+			zk.create( Configuration.DATANODES_PATH, null,
+					Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+		}
 
 		String path = Configuration.DATANODES_PATH +"/"+ InetAddress.getLocalHost().getHostName();
 		String createdPath = zk.create( path,
