@@ -29,19 +29,20 @@ public class JazidaClient extends ConnectionWatcher {
 	private ZookeeperService zkService = new ZookeeperService();
 	private final Configuration hadoopConf = new Configuration();
 
-	public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
+	public static void main(String[] args)
+	throws IOException, KeeperException, InterruptedException {
 		MetaDocument metadoc = new MetaDocument();
 		JazidaClient cliente = new JazidaClient();
 		cliente.addText(metadoc, "adfasdfasfas fas dfas dfas");
 	}
 
-	public JazidaClient() throws KeeperException, InterruptedException, IOException{
-		this.datanodes = zkService.getDataNodes();
+	public JazidaClient()
+	throws KeeperException, InterruptedException, IOException {
 		
+		this.datanodes = zkService.getDataNodes();
 		for (NodeStatus node : datanodes) {
-			// Inicializar proxy para servidor RPC
 			final InetSocketAddress endereco = new InetSocketAddress(node
-					.getHostname(), node.getPort());
+					.getAddress(), node.getPort());
 
 			ITextIndexerServer opalaClient = (ITextIndexerServer) RPC.getProxy(
 					ITextIndexerServer.class, ITextIndexerServer.versionID,
@@ -49,16 +50,17 @@ public class JazidaClient extends ConnectionWatcher {
 
 			clientes.put(node.getHostname(), opalaClient);
 		}
-		
 		partitionPolicy = new RoundRobinPartitionPolicy(datanodes);
 	}
-
+	
 	public int addText(MetaDocument metaDocument, String content)
 			throws IOException {
-		MetaDocumentWritable documentWrap = new MetaDocumentWritable(metaDocument);
+		MetaDocumentWritable documentWrap = new MetaDocumentWritable(
+				metaDocument);
 		NodeStatus node = partitionPolicy.nextNode();
 
-		LOG.info(node.getHostname() + ": documento indexado: "+metaDocument.getId());
+		LOG.info(node.getHostname() + ": documento indexado: "
+				+ metaDocument.getId());
 
 		ITextIndexerServer proxy = clientes.get(node.getHostname());
 		IntWritable result = proxy.addText(documentWrap, new Text(content));
