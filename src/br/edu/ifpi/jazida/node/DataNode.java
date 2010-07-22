@@ -10,8 +10,9 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
-import br.edu.ifpi.jazida.util.JazidaConf;
+import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.jazida.util.Serializer;
+import br.edu.ifpi.jazida.util.ZkConf;
 
 /**
  * Representa um nó conectado ao cluster Jazida.
@@ -49,7 +50,7 @@ public class DataNode extends ConnectionWatcher {
 		
 		this.start( InetAddress.getLocalHost().getHostName(),
 					InetAddress.getLocalHost().getHostAddress(), 
-					JazidaConf.DEFAULT_PORT,
+					DataNodeConf.DEFAULT_PORT,
 					lock);
 	}
 	
@@ -66,7 +67,7 @@ public class DataNode extends ConnectionWatcher {
 		
 		this.start( InetAddress.getLocalHost().getHostName(),
 					InetAddress.getLocalHost().getHostAddress(), 
-					JazidaConf.DEFAULT_PORT,
+					DataNodeConf.DEFAULT_PORT,
 					true);
 	}
 	
@@ -90,19 +91,19 @@ public class DataNode extends ConnectionWatcher {
 		LOG.info("Conectando-se ao Zookeeper Service...");
 		LOG.info("-----------------------------------");
 		
-		super.connect(JazidaConf.ZOOKEEPER_SERVERS);
+		super.connect(ZkConf.ZOOKEEPER_SERVERS);
 
 		NodeStatus node = new NodeStatus();
 		node.setHostname(hostName);
 		node.setAddress(hostAddress);
 		node.setPort(port);
 		
-		if (zk.exists(JazidaConf.DATANODES_PATH, false) == null){
-			zk.create( JazidaConf.DATANODES_PATH, null,
+		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null){
+			zk.create( DataNodeConf.DATANODES_PATH, null,
 					Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 		}
 
-		String path = JazidaConf.DATANODES_PATH +"/"+ InetAddress.getLocalHost().getHostName();
+		String path = DataNodeConf.DATANODES_PATH +"/"+ InetAddress.getLocalHost().getHostName();
 		String createdPath = zk.create( path,
 										Serializer.fromObject(node),
 										Ids.OPEN_ACL_UNSAFE,

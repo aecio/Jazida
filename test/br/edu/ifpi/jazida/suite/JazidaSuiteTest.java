@@ -5,12 +5,14 @@ import org.junit.runners.Suite;
 
 import br.edu.ifpi.jazida.client.JazidaClientTest;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
+import br.edu.ifpi.jazida.util.JazidaConfTest;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	JazidaClientTest.class,
-	RoundRobinPartitionPolicyTest.class	
+	RoundRobinPartitionPolicyTest.class,
+	JazidaConfTest.class
 })
 
 /**

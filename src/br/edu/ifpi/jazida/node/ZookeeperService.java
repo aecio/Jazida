@@ -8,8 +8,9 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
-import br.edu.ifpi.jazida.util.JazidaConf;
+import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.jazida.util.Serializer;
+import br.edu.ifpi.jazida.util.ZkConf;
 
 /**
  * Realiza a conexão do Jazida com o serviço do Zookeeper.
@@ -28,7 +29,7 @@ public class ZookeeperService extends ConnectionWatcher {
 		LOG.info("-----------------------------------");
 		LOG.info("Conectando-se ao ZookeeperService...");
 		try{
-			super.connect(JazidaConf.ZOOKEEPER_SERVERS);
+			super.connect(ZkConf.ZOOKEEPER_SERVERS);
 		}catch (Exception e) {
 			LOG.error(e);
 		}
@@ -46,14 +47,14 @@ public class ZookeeperService extends ConnectionWatcher {
 	 */
 	public List<NodeStatus> getDataNodes() throws KeeperException, InterruptedException, IOException {
 		
-		List<String> nodesIds = zk.getChildren(JazidaConf.DATANODES_PATH, false);
+		List<String> nodesIds = zk.getChildren(DataNodeConf.DATANODES_PATH, false);
 		LOG.info(nodesIds.size() + " datanode(s) ativo(s) no momento.");
 		
 		List<NodeStatus> datanodes = new ArrayList<NodeStatus>();
 		for (String node : nodesIds) {
 			try {
 				
-				byte[] bytes = zk.getData(JazidaConf.DATANODES_PATH+"/"+node, false, null);
+				byte[] bytes = zk.getData(DataNodeConf.DATANODES_PATH+"/"+node, false, null);
 				NodeStatus status = (NodeStatus) Serializer.toObject(bytes);
 				LOG.info(status.getHostname());
 				datanodes.add(status);

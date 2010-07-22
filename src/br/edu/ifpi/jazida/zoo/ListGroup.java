@@ -5,11 +5,11 @@ import java.util.List;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
-import br.edu.ifpi.jazida.util.JazidaConf;
+import br.edu.ifpi.jazida.util.DataNodeConf;
 
 public class ListGroup extends ConnectionWatcher {
 	public void list(String groupName) throws KeeperException, InterruptedException {
-		String path = JazidaConf.DATANODES_PATH;
+		String path = DataNodeConf.DATANODES_PATH;
 		try{
 			List<String> datanodes = zk.getChildren(path, false);
 			
