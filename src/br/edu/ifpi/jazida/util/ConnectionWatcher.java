@@ -10,7 +10,7 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 
 public class ConnectionWatcher implements Watcher {
 
-	private static final int SESSION_TIMEOUT = 5000;
+	private static final int SESSION_TIMEOUT = 2000;
 	protected ZooKeeper zk;
 	private CountDownLatch connectedSignal = new CountDownLatch(1);
 
