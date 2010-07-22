@@ -6,7 +6,7 @@ package br.edu.ifpi.jazida.util;
  * @author Aécio Solano Rodrigues Santos
  *
  */
-public class Configuration {
+public class JazidaConf {
 	
 	public static final String DATANODES_PATH;
 	public static final String ZOOKEEPER_SERVERS;
