@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.wrapper;
+package br.edu.ifpi.jazida.writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;

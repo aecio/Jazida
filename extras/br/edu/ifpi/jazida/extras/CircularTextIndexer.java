@@ -14,7 +14,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
 import br.edu.ifpi.jazida.node.ITextIndexerServer;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
+import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 class CircularTextIndexer {

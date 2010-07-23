@@ -23,7 +23,7 @@ public class ZookeeperService extends ConnectionWatcher {
 	private static final Logger LOG = Logger.getLogger(ZookeeperService.class);
 	
 	/**
-	 * Construtor padrão. Conecta-se aos servidores do Zookeeper listados em {@link JazidaConfg.ZOOKEEPER_SERVERS}.
+	 * Construtor padrão. Conecta-se aos servidores do Zookeeper listados em {@link ZkConf}.ZOOKEEPER_SERVERS.
 	 */
 	public ZookeeperService(){
 		LOG.info("-----------------------------------");
@@ -38,9 +38,9 @@ public class ZookeeperService extends ConnectionWatcher {
 	}
 	
 	/**
-	 * Lista os datanodes conectados no momento ao ZookeeperService.
+	 * Lista os {@link DataNode}s conectados no momento ao ZookeeperService.
 	 * 
-	 * @return
+	 * @return datanodes
 	 * @throws KeeperException
 	 * @throws InterruptedException
 	 * @throws IOException

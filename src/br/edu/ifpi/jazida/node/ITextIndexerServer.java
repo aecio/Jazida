@@ -10,7 +10,7 @@ import org.apache.hadoop.ipc.VersionedProtocol;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
+import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
 /**

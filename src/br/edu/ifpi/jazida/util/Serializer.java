@@ -65,8 +65,8 @@ public class Serializer {
 	 * Transforma um objeto recebido em um array de bytes. O objeto deve
 	 * implementar a interface {@link Serializable}.
 	 * 
-	 * @param toBytes
-	 * @return
+	 * @param toBytes O objeto a ser serializado
+	 * @return Um array de bytes do objeto
 	 * @throws IOException
 	 */
 	public static byte[] fromObject(Serializable toBytes) throws IOException {

@@ -17,9 +17,16 @@ import br.edu.ifpi.jazida.node.ITextIndexerServer;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.ZookeeperService;
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
-import br.edu.ifpi.jazida.wrapper.MetaDocumentWritable;
+import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
+/**
+ * Interface para usuário do Jazida. Aplicações devem utilizar essa classe para
+ * comunicação com um cluster Jazida.
+ * 
+ * @author Aécio Santos
+ * 
+ */
 public class JazidaClient extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(JazidaClient.class);
@@ -29,16 +36,16 @@ public class JazidaClient extends ConnectionWatcher {
 	private ZookeeperService zkService = new ZookeeperService();
 	private final Configuration hadoopConf = new Configuration();
 
-	public static void main(String[] args)
-	throws IOException, KeeperException, InterruptedException {
+	public static void main(String[] args) throws IOException, KeeperException,
+			InterruptedException {
 		MetaDocument metadoc = new MetaDocument();
 		JazidaClient cliente = new JazidaClient();
 		cliente.addText(metadoc, "adfasdfasfas fas dfas dfas");
 	}
 
-	public JazidaClient()
-	throws KeeperException, InterruptedException, IOException {
-		
+	public JazidaClient() throws KeeperException, InterruptedException,
+			IOException {
+
 		this.datanodes = zkService.getDataNodes();
 		for (NodeStatus node : datanodes) {
 			final InetSocketAddress endereco = new InetSocketAddress(node
@@ -52,7 +59,7 @@ public class JazidaClient extends ConnectionWatcher {
 		}
 		partitionPolicy = new RoundRobinPartitionPolicy(datanodes);
 	}
-	
+
 	public int addText(MetaDocument metaDocument, String content)
 			throws IOException {
 		MetaDocumentWritable documentWrap = new MetaDocumentWritable(
