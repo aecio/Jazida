@@ -8,6 +8,13 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 
+/**
+ * Implementa funcionalidades básicas de conexão com o Zookeeper. Classes que
+ * necessitem se comunicar com o Zookeeper devem extender esta classe.
+ * 
+ * @author Aécio Santos
+ * 
+ */
 public class ConnectionWatcher implements Watcher {
 
 	private static final int SESSION_TIMEOUT = 2000;

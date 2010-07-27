@@ -12,7 +12,8 @@ import br.edu.ifpi.jazida.node.NodeStatus;
 public class RoundRobinPartitionPolicyTest {
 
 	@Test
-	public void testNextNode() {
+	public void testDeveriaRetornarOsNosCircularmente() {
+		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
 		NodeStatus node1 = new NodeStatus();
 		NodeStatus node2 = new NodeStatus();
@@ -21,9 +22,11 @@ public class RoundRobinPartitionPolicyTest {
 		nodes.add(node1);
 		nodes.add(node2);
 		nodes.add(node3);
-		
+
+		//Quando
 		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy(nodes);
 		
+		//Então
 		assertTrue(policy.nextNode().equals(node1));
 		assertTrue(policy.nextNode().equals(node2));
 		assertTrue(policy.nextNode().equals(node3));
@@ -37,14 +40,16 @@ public class RoundRobinPartitionPolicyTest {
 	}
 	
 	@Test
-	public void testNextNodeWithOneNode() {
+	public void testDeveriaRetornarSempreOMesmoNo() {
+		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
 		NodeStatus node1 = new NodeStatus();
-		
 		nodes.add(node1);
 		
+		//Quando
 		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy(nodes);
 		
+		//Então
 		assertTrue(policy.nextNode().equals(node1));
 		assertTrue(policy.nextNode().equals(node1));
 		assertTrue(policy.nextNode().equals(node1));

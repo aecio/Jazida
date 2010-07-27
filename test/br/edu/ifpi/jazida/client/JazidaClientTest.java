@@ -34,7 +34,7 @@ public class JazidaClientTest {
 	}
 
 	@Test
-	public void testAddText() throws KeeperException, InterruptedException,
+	public void testDeveriaAdicionarUmDocumentoDeTextoNoIndiceDistribuido() throws KeeperException, InterruptedException,
 			IOException {
 		jazidaClient = new JazidaClient();
 		File arquivo = new File("./sample-data/texts/alice.txt");
