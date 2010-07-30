@@ -12,7 +12,7 @@ import br.edu.ifpi.jazida.node.NodeStatus;
 public class RoundRobinPartitionPolicyTest {
 
 	@Test
-	public void testDeveriaRetornarOsNosCircularmente() {
+	public void deveriaRetornarOsNosCircularmente() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
 		NodeStatus node1 = new NodeStatus();
@@ -40,7 +40,7 @@ public class RoundRobinPartitionPolicyTest {
 	}
 	
 	@Test
-	public void testDeveriaRetornarSempreOMesmoNo() {
+	public void deveriaRetornarSempreOMesmoNo() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
 		NodeStatus node1 = new NodeStatus();

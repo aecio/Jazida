@@ -7,7 +7,7 @@ import org.junit.Test;
 public class JazidaConfTest {
 
 	@Test
-	public void testDeveriaRetornarAlgumHostDoArquivoDeConfiguracao() {
+	public void deveriaRetornarAlgumHostDoArquivoDeConfiguracao() {
 		assertNotNull(ZkConf.ZOOKEEPER_SERVERS);
 	}
 

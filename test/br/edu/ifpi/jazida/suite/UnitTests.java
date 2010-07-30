@@ -3,15 +3,14 @@ package br.edu.ifpi.jazida.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import br.edu.ifpi.jazida.client.JazidaClientTest;
-import br.edu.ifpi.jazida.util.JazidaConfTest;
+import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
+import br.edu.ifpi.jazida.util.WritableUtilsTest;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	JazidaClientTest.class,
-	JazidaConfTest.class,
-	UnitTests.class
+	RoundRobinPartitionPolicyTest.class,
+	WritableUtilsTest.class
 })
 
 /**
@@ -21,6 +20,6 @@ import br.edu.ifpi.jazida.util.JazidaConfTest;
  * @author Aécio Santos
  *
  */
-public class JazidaSuiteTest {
+public class UnitTests {
 	
 }
