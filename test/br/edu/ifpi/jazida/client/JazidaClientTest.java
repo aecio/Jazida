@@ -34,8 +34,10 @@ public class JazidaClientTest {
 	}
 
 	@Test
-	public void testDeveriaAdicionarUmDocumentoDeTextoNoIndiceDistribuido() throws KeeperException, InterruptedException,
-			IOException {
+	public void deveriaAdicionarUmDocumentoDeTextoNoIndiceDistribuido() 
+	throws KeeperException, InterruptedException, IOException {
+
+		//Dado
 		jazidaClient = new JazidaClient();
 		File arquivo = new File("./sample-data/texts/alice.txt");
 
@@ -45,20 +47,21 @@ public class JazidaClientTest {
 		metadoc.setId(arquivo.getName());
 
 		// Ler conteúdo do arquivo
-		InputStreamReader streamReader = new InputStreamReader(
-				new FileInputStream(arquivo));
-		BufferedReader reader = new BufferedReader(streamReader);
+		InputStreamReader isr = new InputStreamReader(new FileInputStream(arquivo));
+		BufferedReader reader = new BufferedReader(isr);
+		
 		StringBuffer stringBuffer = new StringBuffer();
-		String line;
+		String line = null;
 		while ((line = reader.readLine()) != null) {
 			stringBuffer.append(line);
 		}
 		reader.close();
-		streamReader.close();
+		isr.close();
 
-		// Indexar documento
+		//Quando
 		Integer code = jazidaClient.addText(metadoc, stringBuffer.toString());
+		
+		//Então
 		assertNotNull(code);
-
 	}
 }

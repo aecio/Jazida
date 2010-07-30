@@ -24,7 +24,7 @@ import br.edu.ifpi.jazida.util.ZkConf;
  */
 public class DataNode extends ConnectionWatcher {
 
-	private Logger LOG = Logger.getLogger(DataNode.class);
+	private static final Logger LOG = Logger.getLogger(DataNode.class);
 	private TextIndexerServer server;
 
 	/**
@@ -102,10 +102,7 @@ public class DataNode extends ConnectionWatcher {
 
 		super.connect(ZkConf.ZOOKEEPER_SERVERS);
 
-		NodeStatus node = new NodeStatus();
-		node.setHostname(hostName);
-		node.setAddress(hostAddress);
-		node.setPort(port);
+		NodeStatus node = new NodeStatus(hostName, hostAddress, port);
 
 		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
 			zk.create(DataNodeConf.DATANODES_PATH, null, Ids.OPEN_ACL_UNSAFE,

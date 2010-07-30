@@ -15,9 +15,9 @@ public class RoundRobinPartitionPolicyTest {
 	public void deveriaRetornarOsNosCircularmente() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
-		NodeStatus node1 = new NodeStatus();
-		NodeStatus node2 = new NodeStatus();
-		NodeStatus node3 = new NodeStatus();
+		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16001);
+		NodeStatus node2 = new NodeStatus("host2", "127.0.0.1", 16002);
+		NodeStatus node3 = new NodeStatus("host3", "127.0.0.1", 16003);
 		
 		nodes.add(node1);
 		nodes.add(node2);
@@ -36,14 +36,13 @@ public class RoundRobinPartitionPolicyTest {
 		assertTrue(policy.nextNode().equals(node1));
 		assertTrue(policy.nextNode().equals(node2));
 		assertTrue(policy.nextNode().equals(node3));
-		
 	}
 	
 	@Test
 	public void deveriaRetornarSempreOMesmoNo() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
-		NodeStatus node1 = new NodeStatus();
+		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16000);
 		nodes.add(node1);
 		
 		//Quando
@@ -55,5 +54,4 @@ public class RoundRobinPartitionPolicyTest {
 		assertTrue(policy.nextNode().equals(node1));
 	}
 	
-
 }

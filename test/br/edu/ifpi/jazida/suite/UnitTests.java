@@ -4,13 +4,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
+import br.edu.ifpi.jazida.node.NodeStatusTest;
 import br.edu.ifpi.jazida.util.WritableUtilsTest;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	RoundRobinPartitionPolicyTest.class,
-	WritableUtilsTest.class
+	WritableUtilsTest.class,
+	NodeStatusTest.class
 })
 
 /**

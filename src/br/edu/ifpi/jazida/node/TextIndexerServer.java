@@ -36,7 +36,7 @@ public class TextIndexerServer implements ITextIndexerServer {
 
 	/**
 	 * Inicia um servidor RPC para interface {@link ITextIndexerServer} no host
-	 * local, na porta 16000.
+	 * local, na porta configurada em DataNodeConf.DEFAULT_PORT.
 	 * 
 	 * @param args
 	 */
@@ -82,7 +82,7 @@ public class TextIndexerServer implements ITextIndexerServer {
 		server = RPC.getServer(this, serverName, port, conf);
 	}
 
-	/* Métodos da interface implementada */
+	/* Métodos da interface ITextIndexerServer */
 
 	@Override
 	public long getProtocolVersion(String arg0, long arg1) throws IOException {
@@ -92,9 +92,8 @@ public class TextIndexerServer implements ITextIndexerServer {
 	@Override
 	public IntWritable addText(MetaDocumentWritable metaDocWrapper, Text content) {
 		MetaDocument metaDocument = metaDocWrapper.getMetaDoc();
-		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
-		ReturnMessage result = indexer
-				.addText(metaDocument, content.toString());
+		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl()
+							.addText(metaDocument, content.toString());
 		return new IntWritable(result.getCode());
 	}
 
@@ -105,10 +104,8 @@ public class TextIndexerServer implements ITextIndexerServer {
 
 	@Override
 	public IntWritable delText(Text identifier) {
-
 		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
 		ReturnMessage result = indexer.delText(identifier.toString());
-
 		return new IntWritable(result.getCode());
 	}
 
@@ -125,10 +122,10 @@ public class TextIndexerServer implements ITextIndexerServer {
 	}
 
 	@Override
-	public IntWritable updateText(Text identifier, MapWritable metaDocumentMap) {
-		Map<String, String> updates = convertMapWritableToMap(metaDocumentMap);
-		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl().updateText(
-				identifier.toString(), updates);
+	public IntWritable updateText(Text id, MapWritable updatesWritable) {
+		Map<String, String> updates = convertMapWritableToMap(updatesWritable);
+		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl()
+											.updateText(id.toString(), updates);
 		return new IntWritable(result.getCode());
 	}
 }
