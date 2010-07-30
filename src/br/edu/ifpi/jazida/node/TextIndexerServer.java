@@ -1,5 +1,7 @@
 package br.edu.ifpi.jazida.node;
 
+import static br.edu.ifpi.jazida.util.WritableUtils.convertMapWritableToMap;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -7,12 +9,14 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.RPC.Server;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 
+import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.indexing.TextIndexer;
 import br.edu.ifpi.opala.indexing.TextIndexerImpl;
@@ -39,7 +43,7 @@ public class TextIndexerServer implements ITextIndexerServer {
 	public static void main(String[] args) {
 		try {
 			TextIndexerServer server = new TextIndexerServer(InetAddress
-					.getLocalHost().getHostName(), 16000);
+					.getLocalHost().getHostName(), DataNodeConf.DEFAULT_PORT);
 			server.start(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,30 +100,35 @@ public class TextIndexerServer implements ITextIndexerServer {
 
 	@Override
 	public void backupNow() throws FileNotFoundException, IOException {
-		// TODO Auto-generated method stub
+		TextIndexerImpl.getTextIndexerImpl().backupNow();
 	}
 
 	@Override
 	public IntWritable delText(Text identifier) {
-		// TODO Auto-generated method stub
-		return null;
+
+		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
+		ReturnMessage result = indexer.delText(identifier.toString());
+
+		return new IntWritable(result.getCode());
 	}
 
 	@Override
 	public void optimize() throws CorruptIndexException,
 			LockObtainFailedException, IOException {
-		// TODO Auto-generated method stub
+		TextIndexerImpl.getTextIndexerImpl().optimize();
 	}
 
 	@Override
 	public void restoreBackup() {
-		// TODO Auto-generated method stub
+		TextIndexerImpl.getTextIndexerImpl().restoreBackup();
+
 	}
 
 	@Override
-	public IntWritable updateText(String id, Map<String, String> metaDocument) {
-		// TODO Auto-generated method stub
-		return null;
+	public IntWritable updateText(Text identifier, MapWritable metaDocumentMap) {
+		Map<String, String> updates = convertMapWritableToMap(metaDocumentMap);
+		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl().updateText(
+				identifier.toString(), updates);
+		return new IntWritable(result.getCode());
 	}
-
 }

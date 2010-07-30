@@ -2,9 +2,9 @@ package br.edu.ifpi.jazida.node;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.VersionedProtocol;
 import org.apache.lucene.index.CorruptIndexException;
@@ -65,5 +65,5 @@ public interface ITextIndexerServer extends VersionedProtocol {
 	 * Assinatura para o método que atualiza um documento no índice
 	 * @return status Código de sucesso ou erro de acordo com a Enum {@link ReturnMessage}
 	 */
-	public IntWritable updateText(String id, Map<String, String> metaDocument);
+	public IntWritable updateText(Text id, MapWritable metaDocumentMap);
 }
