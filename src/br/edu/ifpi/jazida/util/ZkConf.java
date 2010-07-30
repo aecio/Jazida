@@ -36,7 +36,7 @@ public class ZkConf {
 			while ((host = reader.readLine()) != null) {
 				if (!host.trim().startsWith("#")) {
 					buffer.append(',');
-					buffer.append(host);
+					buffer.append(host.trim());
 				}
 			}
 			zkServers = buffer.toString().replaceFirst(",", "");
