@@ -12,7 +12,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.node.ITextIndexerServer;
+import br.edu.ifpi.jazida.node.ITextIndexerProtocol;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
@@ -29,8 +29,8 @@ public class SingleTextIndexer {
 		Configuration conf = new Configuration();
 		InetSocketAddress addr = new InetSocketAddress("monica-desktop", 16000);
 
-		ITextIndexerServer client = (ITextIndexerServer) RPC.waitForProxy(
-				ITextIndexerServer.class, ITextIndexerServer.versionID, addr,
+		ITextIndexerProtocol client = (ITextIndexerProtocol) RPC.waitForProxy(
+				ITextIndexerProtocol.class, ITextIndexerProtocol.versionID, addr,
 				conf);
 
 		File arquivo = nextDocument();

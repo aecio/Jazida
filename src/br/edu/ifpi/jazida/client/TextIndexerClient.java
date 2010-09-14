@@ -13,7 +13,8 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
-import br.edu.ifpi.jazida.node.ITextIndexerServer;
+import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
+import br.edu.ifpi.jazida.node.ITextIndexerProtocol;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.ZookeeperService;
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
@@ -27,49 +28,49 @@ import br.edu.ifpi.opala.utils.MetaDocument;
  * @author Aécio Santos
  * 
  */
-public class JazidaClient extends ConnectionWatcher {
+public class TextIndexerClient extends ConnectionWatcher {
 
-	private static final Logger LOG = Logger.getLogger(JazidaClient.class);
+	private static final Logger LOG = Logger.getLogger(TextIndexerClient.class);
 	private static PartitionPolicy<NodeStatus> partitionPolicy;
 	private List<NodeStatus> datanodes;
-	private Map<String, ITextIndexerServer> clientes = new HashMap<String, ITextIndexerServer>();
+	private Map<String, ITextIndexerProtocol> proxyMap = new HashMap<String, ITextIndexerProtocol>();
 	private ZookeeperService zkService = new ZookeeperService();
 	private final Configuration hadoopConf = new Configuration();
 
-	public static void main(String[] args) throws IOException, KeeperException,
-			InterruptedException {
-		MetaDocument metadoc = new MetaDocument();
-		JazidaClient cliente = new JazidaClient();
-		cliente.addText(metadoc, "adfasdfasfas fas dfas dfas");
-	}
-
-	public JazidaClient() throws KeeperException, InterruptedException,
-			IOException {
-
+	public TextIndexerClient() throws KeeperException, InterruptedException, IOException {
+		
 		this.datanodes = zkService.getDataNodes();
+		if (datanodes.size()==0) 
+			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
+		
 		for (NodeStatus node : datanodes) {
-			final InetSocketAddress endereco = new InetSocketAddress(node
-					.getAddress(), node.getPort());
-
-			ITextIndexerServer opalaClient = (ITextIndexerServer) RPC.getProxy(
-					ITextIndexerServer.class, ITextIndexerServer.versionID,
-					endereco, hadoopConf);
-
-			clientes.put(node.getHostname(), opalaClient);
+			final InetSocketAddress socketAdress = new InetSocketAddress(node.getAddress(),
+																		 node.getTextIndexerServerPort());
+			ITextIndexerProtocol opalaClient = getTextIndexerServer(socketAdress);
+			proxyMap.put(node.getHostname(), opalaClient);
 		}
+		
 		partitionPolicy = new RoundRobinPartitionPolicy(datanodes);
 	}
 
+	private ITextIndexerProtocol getTextIndexerServer(final InetSocketAddress endereco)
+	throws IOException {
+		ITextIndexerProtocol proxy = (ITextIndexerProtocol) RPC.getProxy(
+											ITextIndexerProtocol.class,
+											ITextIndexerProtocol.versionID,
+											endereco, hadoopConf);
+		return proxy;
+	}
+
 	public int addText(MetaDocument metaDocument, String content)
-			throws IOException {
-		MetaDocumentWritable documentWrap = new MetaDocumentWritable(
-				metaDocument);
+	throws IOException {
+		
+		MetaDocumentWritable documentWrap = new MetaDocumentWritable(metaDocument);
 		NodeStatus node = partitionPolicy.nextNode();
 
-		LOG.info(node.getHostname() + ": documento indexado: "
-				+ metaDocument.getId());
+		LOG.info(node.getHostname()+": documento indexado: "+metaDocument.getId());
 
-		ITextIndexerServer proxy = clientes.get(node.getHostname());
+		ITextIndexerProtocol proxy = proxyMap.get(node.getHostname());
 		IntWritable result = proxy.addText(documentWrap, new Text(content));
 
 		return result.get();

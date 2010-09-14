@@ -3,15 +3,26 @@ package br.edu.ifpi.jazida.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import br.edu.ifpi.jazida.client.JazidaClientTest;
+import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
+import br.edu.ifpi.jazida.client.TextIndexerClientTest;
+import br.edu.ifpi.jazida.client.TextSearchClientTest;
+import br.edu.ifpi.jazida.node.NodeStatusTest;
+import br.edu.ifpi.jazida.node.TextSearchProtocolTest;
+import br.edu.ifpi.jazida.node.ZookeeperServiceTest;
 import br.edu.ifpi.jazida.util.JazidaConfTest;
+import br.edu.ifpi.jazida.util.WritableUtilsTest;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	JazidaClientTest.class,
+	RoundRobinPartitionPolicyTest.class,
+	TextIndexerClientTest.class,
+	TextSearchClientTest.class,
+	NodeStatusTest.class,
+	TextSearchProtocolTest.class,
+	ZookeeperServiceTest.class,
 	JazidaConfTest.class,
-	UnitTests.class
+	WritableUtilsTest.class,
 })
 
 /**

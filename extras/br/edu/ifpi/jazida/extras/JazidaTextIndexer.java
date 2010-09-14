@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import br.edu.ifpi.jazida.client.JazidaClient;
+import br.edu.ifpi.jazida.client.TextIndexerClient;
 import br.edu.ifpi.opala.utils.MetaDocument;
 
 public class JazidaTextIndexer {
@@ -19,7 +19,7 @@ public class JazidaTextIndexer {
 		
 		long inicio = System.currentTimeMillis();
 		try {
-			JazidaClient jazidaClient = new JazidaClient();
+			TextIndexerClient jazidaClient = new TextIndexerClient();
 		
 			File arquivo = nextDocument();
 			while( arquivo != null ) {

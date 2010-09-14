@@ -9,5 +9,6 @@ import br.edu.ifpi.jazida.node.DataNode;
  */
 public class DataNodeConf {
 	public static final String DATANODES_PATH ="/jazida";
-	public static final int DEFAULT_PORT = 16000;
+	public static final int TEXT_INDEXER_SERVER_PORT = 16000;
+	public static final int TEXT_SEARCH_SERVER_PORT = 16001;
 }

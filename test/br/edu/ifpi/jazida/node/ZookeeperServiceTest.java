@@ -18,9 +18,9 @@ import br.edu.ifpi.jazida.util.Serializer;
 public class ZookeeperServiceTest {
 
 	@Test
-	public void DeveriaRetornarOsDataNodesConectadosAoZookeeper() throws Exception {
+	public void deveriaRetornarOsDataNodesConectadosAoZookeeper() throws Exception {
 		//Dado
-		NodeStatus dataNode1 = new NodeStatus("host1", "127.0.0.1", 16000);
+		NodeStatus dataNode1 = new NodeStatus("host1", "127.0.0.1", 16000, 16001);
 		
 		ZooKeeper zk =  mock(ZooKeeper.class);
 		when(zk.getChildren(DataNodeConf.DATANODES_PATH, false)).thenReturn(Arrays.asList("host1"));

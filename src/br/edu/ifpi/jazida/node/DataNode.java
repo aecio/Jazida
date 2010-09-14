@@ -25,8 +25,8 @@ import br.edu.ifpi.jazida.util.ZkConf;
 public class DataNode extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
-	private TextIndexerServer server;
-
+	private TextIndexerServer indexerServer;
+	private TextSearcherServer searchServer;
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
@@ -54,9 +54,11 @@ public class DataNode extends ConnectionWatcher {
 	public void start(boolean lock) throws UnknownHostException, IOException,
 			InterruptedException, KeeperException {
 
-		this.start(InetAddress.getLocalHost().getHostName(), InetAddress
-				.getLocalHost().getHostAddress(), DataNodeConf.DEFAULT_PORT,
-				lock);
+		this.start(	InetAddress.getLocalHost().getHostName(), 
+					InetAddress.getLocalHost().getHostAddress(),
+					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
+					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+					lock);
 	}
 
 	/**
@@ -70,9 +72,11 @@ public class DataNode extends ConnectionWatcher {
 	public void start() throws UnknownHostException, IOException,
 			InterruptedException, KeeperException {
 
-		this.start(InetAddress.getLocalHost().getHostName(), InetAddress
-				.getLocalHost().getHostAddress(), DataNodeConf.DEFAULT_PORT,
-				true);
+		this.start(	InetAddress.getLocalHost().getHostName(), 
+					InetAddress.getLocalHost().getHostAddress(),
+					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
+					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+					true);
 	}
 
 	/**
@@ -82,8 +86,9 @@ public class DataNode extends ConnectionWatcher {
 	 *            O nome do host em que o DataNode está sendo iniciado.
 	 * @param hostAddress
 	 *            O endereço IP do host.
-	 * @param port
+	 * @param textIndexerServerPort
 	 *            O número da porta que o servidor escutará requisições.
+	 * @param textSearchServerPort 
 	 * @param lock
 	 *            Se a execução será bloqueada após o inicialização do
 	 *            {@link DataNode}
@@ -92,9 +97,12 @@ public class DataNode extends ConnectionWatcher {
 	 * @throws InterruptedException
 	 * @throws KeeperException
 	 */
-	public void start(String hostName, String hostAddress, int port,
-			boolean lock) throws IOException, InterruptedException,
-			KeeperException {
+	public void start(String hostName, 
+						String hostAddress,
+						int textIndexerServerPort,
+						int textSearchServerPort,
+						boolean lock) 
+	throws IOException, InterruptedException, KeeperException {
 
 		LOG.info("-----------------------------------");
 		LOG.info("Conectando-se ao Zookeeper Service...");
@@ -102,7 +110,10 @@ public class DataNode extends ConnectionWatcher {
 
 		super.connect(ZkConf.ZOOKEEPER_SERVERS);
 
-		NodeStatus node = new NodeStatus(hostName, hostAddress, port);
+		NodeStatus node = new NodeStatus(hostName, 
+										hostAddress, 
+										textIndexerServerPort,
+										textSearchServerPort);
 
 		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
 			zk.create(DataNodeConf.DATANODES_PATH, null, Ids.OPEN_ACL_UNSAFE,
@@ -111,15 +122,23 @@ public class DataNode extends ConnectionWatcher {
 
 		String path = DataNodeConf.DATANODES_PATH + "/"
 				+ InetAddress.getLocalHost().getHostName();
-		String createdPath = zk.create(path, Serializer.fromObject(node),
-				Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 
 		LOG.info("----------------------------------------");
 		LOG.info("Conectado ao grupo: " + createdPath);
 		LOG.info("Agora, vou iniciar o servidor IPC/RPC");
 		LOG.info("----------------------------------------");
 
-		server = new TextIndexerServer(node.getHostname(), node.getPort());
-		server.start(lock);
+		indexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
+		indexerServer.start(lock);
+
+		searchServer = new TextSearcherServer(new TextSearchProtocol(), node.getHostname(), node.getTextSearchServerPort());
+		searchServer.start(lock);
+	}
+	
+	public void stop() throws InterruptedException {
+		super.disconnect();
+		indexerServer.stop();
+		searchServer.stop();
 	}
 }

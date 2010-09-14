@@ -15,12 +15,14 @@ public class NodeStatus implements Serializable {
 
 	private String hostname;
 	private String address; // Endereço IP do host
-	private int port;
+	private int textSearchServerPort;
+	private int textIndexerServerPort;
 	
-	public NodeStatus(String hostname, String address, int port) {
+	public NodeStatus(String hostname, String address, int textIndexerServerPort, int textSearchServerPort) {
 		this.hostname = hostname;
 		this.address = address;
-		this.port = port;
+		this.textIndexerServerPort = textIndexerServerPort;
+		this.textSearchServerPort = textSearchServerPort;
 	}
 
 	public String getHostname() {
@@ -39,19 +41,27 @@ public class NodeStatus implements Serializable {
 		this.address = address;
 	}
 	
-	public void setPort(int port) {
-		this.port = port;
+	public int getTextSearchServerPort() {
+		return textSearchServerPort;
 	}
 
-	public int getPort() {
-		return port;
+	public void setTextSearchServerPort(int textSearchServerPort) {
+		this.textSearchServerPort = textSearchServerPort;
+	}
+
+	public int getTextIndexerServerPort() {
+		return textIndexerServerPort;
+	}
+
+	public void setTextIndexerServerPort(int textIndexerServerPort) {
+		this.textIndexerServerPort = textIndexerServerPort;
 	}
 
 	@Override
 	public String toString() {
 		return hostname + "/" + address;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -59,7 +69,6 @@ public class NodeStatus implements Serializable {
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result
 				+ ((hostname == null) ? 0 : hostname.hashCode());
-		result = prime * result + port;
 		return result;
 	}
 
@@ -82,8 +91,8 @@ public class NodeStatus implements Serializable {
 				return false;
 		} else if (!hostname.equals(other.hostname))
 			return false;
-		if (port != other.port)
-			return false;
 		return true;
 	}
+	
+	
 }

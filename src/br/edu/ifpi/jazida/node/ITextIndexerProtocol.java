@@ -18,7 +18,7 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
  * @author Aécio Santos
  *
  */
-public interface ITextIndexerServer extends VersionedProtocol {
+public interface ITextIndexerProtocol extends VersionedProtocol {
 
 	public static final long versionID = 0;
 
