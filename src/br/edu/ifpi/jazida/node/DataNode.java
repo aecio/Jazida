@@ -1,18 +1,22 @@
 package br.edu.ifpi.jazida.node;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
+import br.edu.ifpi.jazida.nio.Serializer;
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
 import br.edu.ifpi.jazida.util.DataNodeConf;
-import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
+import br.edu.ifpi.opala.utils.Path;
 
 /**
  * Representa um nó conectado ao cluster Jazida. Durante sua inicialização,
@@ -27,6 +31,7 @@ public class DataNode extends ConnectionWatcher {
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
 	private TextIndexerServer indexerServer;
 	private TextSearcherServer searchServer;
+	private SearchableServer searchableServer;
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
@@ -134,11 +139,21 @@ public class DataNode extends ConnectionWatcher {
 
 		searchServer = new TextSearcherServer(new TextSearchProtocol(), node.getHostname(), node.getTextSearchServerPort());
 		searchServer.start(lock);
+		
+		FSDirectory dir = FSDirectory.open(new File(Path.TEXT_INDEX.getValue()));
+		IndexSearcher searcher = new IndexSearcher(dir, true);
+		searchableServer = new SearchableServer(
+						new SearchableProtocol(searcher),
+						InetAddress.getLocalHost().getHostName(),
+						DataNodeConf.TEXT_SEARCH_SERVER_PORT+1 );
+		searchableServer.start(lock);
+		
 	}
 	
 	public void stop() throws InterruptedException {
 		super.disconnect();
 		indexerServer.stop();
 		searchServer.stop();
+		searchableServer.stop();
 	}
 }

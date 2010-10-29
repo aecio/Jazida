@@ -1,6 +1,6 @@
 package br.edu.ifpi.jazida.node;
 
-import static br.edu.ifpi.jazida.util.WritableUtils.convertMapWritableToMap;
+import static br.edu.ifpi.jazida.nio.WritableUtils.convertMapWritableToMap;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

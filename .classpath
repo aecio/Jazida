@@ -7,12 +7,12 @@
 	<classpathentry kind="lib" path="lib/opala.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-core-0.20.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.9.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-analyzers-2.9.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/zookeeper-3.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/hamcrest-all-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/test/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-3.0.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

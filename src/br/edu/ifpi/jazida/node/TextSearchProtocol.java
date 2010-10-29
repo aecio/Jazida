@@ -1,6 +1,6 @@
 package br.edu.ifpi.jazida.node;
 
-import static br.edu.ifpi.jazida.util.WritableUtils.*;
+import static br.edu.ifpi.jazida.nio.WritableUtils.*;
 
 import java.io.IOException;
 

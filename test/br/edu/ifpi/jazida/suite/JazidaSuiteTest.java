@@ -3,6 +3,7 @@ package br.edu.ifpi.jazida.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import br.edu.ifpi.jazida.client.ParallelTextSearchTest;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
 import br.edu.ifpi.jazida.client.TextIndexerClientTest;
 import br.edu.ifpi.jazida.client.TextSearchClientTest;
@@ -23,6 +24,7 @@ import br.edu.ifpi.jazida.util.WritableUtilsTest;
 	ZookeeperServiceTest.class,
 	JazidaConfTest.class,
 	WritableUtilsTest.class,
+	ParallelTextSearchTest.class
 })
 
 /**

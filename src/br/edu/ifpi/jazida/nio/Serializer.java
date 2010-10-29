@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.util;
+package br.edu.ifpi.jazida.nio;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

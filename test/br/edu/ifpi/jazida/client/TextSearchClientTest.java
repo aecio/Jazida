@@ -32,17 +32,17 @@ public class TextSearchClientTest {
 	
 	@BeforeClass
 	public static void setUpTest() throws Exception {
+		FileUtilsForTest.deleteDir(new File(Path.TEXT_INDEX.getValue()));
+		assertTrue(UtilForTest.indexTextDirOrFile(new File(SAMPLE_DATA_FOLDER)));
+		
 		datanode = new DataNode();
 		datanode.start(false);
 		
-		FileUtilsForTest.deleteDir(new File(Path.TEXT_INDEX.getValue()));
-		assertTrue(UtilForTest.indexTextDirOrFile(new File(SAMPLE_DATA_FOLDER)));
 	}
 	
 	@AfterClass
 	public static void tearDownTest() throws InterruptedException {
 		datanode.stop();
-		FileUtilsForTest.deleteDir(new File(Path.TEXT_INDEX.getValue()));
 	}
 	
 

@@ -1,9 +1,9 @@
 package br.edu.ifpi.jazida.client;
 
-import static br.edu.ifpi.jazida.util.WritableUtils.convertIntToIntWritable;
-import static br.edu.ifpi.jazida.util.WritableUtils.convertMapToMapWritable;
-import static br.edu.ifpi.jazida.util.WritableUtils.convertStringListToTextArray;
-import static br.edu.ifpi.jazida.util.WritableUtils.convertStringToText;
+import static br.edu.ifpi.jazida.nio.WritableUtils.convertIntToIntWritable;
+import static br.edu.ifpi.jazida.nio.WritableUtils.convertMapToMapWritable;
+import static br.edu.ifpi.jazida.nio.WritableUtils.convertStringListToTextArray;
+import static br.edu.ifpi.jazida.nio.WritableUtils.convertStringToText;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

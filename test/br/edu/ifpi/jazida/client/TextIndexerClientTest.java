@@ -42,7 +42,6 @@ public class TextIndexerClientTest {
 	@AfterClass
 	public static void tearDownTest() throws InterruptedException {
 		datanode.stop();
-		FileUtilsForTest.deleteDir(new File(Path.TEXT_INDEX.getValue()));
 	}
 
 	@Before

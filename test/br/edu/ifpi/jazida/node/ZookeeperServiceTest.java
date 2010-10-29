@@ -12,8 +12,8 @@ import java.util.List;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
 
+import br.edu.ifpi.jazida.nio.Serializer;
 import br.edu.ifpi.jazida.util.DataNodeConf;
-import br.edu.ifpi.jazida.util.Serializer;
 
 public class ZookeeperServiceTest {
 
@@ -27,10 +27,11 @@ public class ZookeeperServiceTest {
 		when(zk.getData(DataNodeConf.DATANODES_PATH + "/"+ "host1", false, null)).thenReturn(Serializer.fromObject(dataNode1));
 		
 		ZookeeperService zkService = new ZookeeperService(zk);
+		
 		//Quando
 		List<NodeStatus> dataNodes = zkService.getDataNodes();
+		
 		//Então
-		System.out.println(dataNodes);
 		assertThat(dataNodes, contains(dataNode1));
 	}
 	

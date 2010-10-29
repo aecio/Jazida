@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 
+import br.edu.ifpi.jazida.nio.Serializer;
 import br.edu.ifpi.jazida.util.ConnectionWatcher;
 import br.edu.ifpi.jazida.util.DataNodeConf;
-import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
 
 /**
