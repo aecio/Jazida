@@ -6,7 +6,6 @@ import static br.edu.ifpi.jazida.util.WritableUtils.convertStringListToTextArray
 import static br.edu.ifpi.jazida.util.WritableUtils.convertStringToText;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +14,6 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BooleanWritable;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.MapWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
@@ -116,19 +112,5 @@ public class TextSearchClient {
 			LOG.info("Não foi possível recuperar os DataNodes ativos no ZookeeperService");
 		}
 		return result;
-	}
-
-	static Method getSearchMethod() {
-		Method searchMethod = null;
-		try {
-			searchMethod = ITextSearchProtocol.class.getMethod("search",
-					MapWritable.class, Text[].class, IntWritable.class,
-					IntWritable.class, Text.class, BooleanWritable.class);
-		} catch (SecurityException e) {
-			LOG.fatal("SecurityException ao obter método da interface ITextSearchServer");
-		} catch (NoSuchMethodException e) {
-			LOG.fatal("Metódo search() não encontrado na interface ITextSearchServer");
-		}
-		return searchMethod;
 	}
 }

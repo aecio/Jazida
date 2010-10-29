@@ -2,13 +2,12 @@ package br.edu.ifpi.jazida.client;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,16 +71,6 @@ public class TextSearchClientTest {
 		assertThat(resultado.getItems().size(), is(equalTo(1)));
 		assertThat(resultado.getItems().iterator().next().getField(Metadata.AUTHOR.getValue()), is(notNullValue()));
 		assertThat(resultado.getItems().iterator().next().getField(Metadata.TITLE.getValue()), is(notNullValue()));
-	}
-
-	@Test
-	public final void deveriaRetorarOMetodoSearch() {
-		//dado
-		Method searchMethod = null;
-		//quando
-		searchMethod = TextSearchClient.getSearchMethod();
-		//então
-		assertThat(searchMethod, is(instanceOf(Method.class)));
-	}
-	
+		assertThat(resultado.getItems().iterator().next().getField(Metadata.KEYWORDS.getValue()), is(nullValue()));
+	}	
 }
