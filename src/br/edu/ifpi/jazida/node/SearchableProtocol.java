@@ -4,9 +4,12 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TopFieldDocs;
 
 import br.edu.ifpi.jazida.writable.CollectorWritable;
 import br.edu.ifpi.jazida.writable.DocumentWritable;
@@ -40,6 +43,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			searcher.close();
 		}catch (IOException e) {
+			LOG.error("Falha em SearchableProtocol.close()");
 			LOG.error(e);
 		}
 	}
@@ -49,11 +53,11 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new DocumentWritable(searcher.doc(arg0.get()));
 		} catch (CorruptIndexException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.doc(IntWritable)");
+			LOG.error(e);
 		} catch (IOException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.doc(IntWritable)");
+			LOG.error(e);
 		}
 		return null;
 	}
@@ -61,10 +65,11 @@ public class SearchableProtocol implements ISearchableProtocol {
 	@Override
 	public DocumentWritable doc(IntWritable arg0, FieldSelectorWritable arg1) {
 		try {
-			return new DocumentWritable(searcher.doc(arg0.get(), arg1.getFieldSelector()));
+			Document doc = searcher.doc(arg0.get(), arg1.getFieldSelector());
+			return new DocumentWritable(doc);
 		} catch (Exception e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.doc(IntWritable, FieldSelector)");
+			LOG.error(e);
 		};
 		return null;
 	}
@@ -74,8 +79,8 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new IntWritable(searcher.docFreq(arg0.getTerm()));
 		} catch (IOException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.docFreqs(TermWritable[])");
+			LOG.error(e);
 		}
 		return null;
 	}
@@ -97,8 +102,8 @@ public class SearchableProtocol implements ISearchableProtocol {
 			
 			return freqs;
 		} catch (IOException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha SearchableProtocol.docFreqs(TermWritable[])");
+			LOG.error(e);
 			return null;
 		}
 	}
@@ -108,8 +113,8 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new ExplanationWritable(searcher.explain(arg0.getWeight(), arg1.get()));
 		} catch (IOException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha SearchableProtocol.explain()");
+			LOG.error(e);
 			return null;
 		}
 	}
@@ -119,8 +124,8 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new IntWritable(searcher.maxDoc());
 		} catch (IOException e) {
-			LOG.error("Falha no Servidor de RPC");
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.maxDoc()");
+			LOG.error(e);
 			return null;
 		}
 	}
@@ -130,38 +135,49 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new QueryWritable(searcher.rewrite(arg0.getQuery()));
 		} catch (IOException e) {
+			LOG.error("Falha em SearchableProtocol.rewrite(QueryWritable)");
 			LOG.error(e);
 			return null;
 		}
 	}
 
 	@Override
-	public void search(WeightWritable arg0, FilterWritable arg1,
-			CollectorWritable arg2) {
-		// TODO Auto-generated method stub
-		throw new java.lang.UnsupportedOperationException("Não implementado ainda....");
+	public void search(WeightWritable arg0, FilterWritable arg1, CollectorWritable arg2) {
+		//
+		// TODO: Implementar search() com Collectors
+		//
+		String message = "search(WeightWritable, FilterWritable, CollectorWritable) NÃO IMPLEMENTADO!";
+		LOG.error(message);
+		throw new java.lang.UnsupportedOperationException(message);
 	}
 
 	@Override
 	public TopDocsWritable search(WeightWritable arg0, FilterWritable arg1,
 			IntWritable arg2) {
 		try {
-			return new TopDocsWritable(searcher.search(arg0.getWeight(), arg1.getFilter(), arg2.get()));
+			TopDocs search = searcher.search(arg0.getWeight(), arg1.getFilter(), arg2.get());
+			return new TopDocsWritable(search);
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.search()");
+			LOG.error(e);
 			return null;
 		}
 	}
 
 	@Override
-	public TopFieldDocsWritable search(WeightWritable arg0,
-			FilterWritable arg1, IntWritable arg2, SortWritable arg3) {
+	public TopFieldDocsWritable search(	WeightWritable arg0,
+										FilterWritable arg1,
+										IntWritable arg2,
+										SortWritable arg3) {
 		try {
-			return new TopFieldDocsWritable(searcher.search(arg0.getWeight(), arg1.getFilter(), arg2.get(), arg3.getSort()));
+			TopFieldDocs topdocs = searcher.search(	arg0.getWeight(),
+													arg1.getFilter(),
+													arg2.get(),
+													arg3.getSort());
+			return new TopFieldDocsWritable(topdocs);
 		} catch (IOException e) {
-			LOG.error(e.getMessage());
-			e.printStackTrace();
+			LOG.error("Falha em SearchableProtocol.search(WeightWritable,FilterWritable,IntWritable,SortWritabl)");
+			LOG.error(e);
 			return null;
 		}
 	}

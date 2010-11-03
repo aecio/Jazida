@@ -56,7 +56,6 @@ public class RemoteSearchableAdapter implements Searchable {
 
 	@Override
 	public int[] docFreqs(Term[] terms) throws IOException {
-		
 		TermWritable[] termsWritable = new TermWritable[terms.length]; 
 		for (int i = 0; i < terms.length; i++) {
 			termsWritable[i] = new TermWritable(terms[i]);
@@ -87,9 +86,10 @@ public class RemoteSearchableAdapter implements Searchable {
 	}
 
 	@Override
-	public void search(Weight arg0, Filter arg1, Collector arg2)
-			throws IOException {
+	public void search(Weight arg0, Filter arg1, Collector arg2) throws IOException {
+		//
 		// TODO: implementar busca com Collectors
+		//
 		throw new UnsupportedOperationException("Operação ainda não implementada!");
 	}
 

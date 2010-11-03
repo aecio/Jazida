@@ -36,8 +36,8 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
 public class ParallelTextSearcherClient implements TextSearcher {
 	
 	private static final Logger LOG = Logger.getLogger(ParallelTextSearcherClient.class);
-	private ParallelMultiSearcher searcher;
 	private static final Configuration HADOOP_CONF = new Configuration();
+	private ParallelMultiSearcher searcher;
 	private List<NodeStatus> datanodes;
 	private Map<String, ISearchableProtocol> proxyMap = new HashMap<String, ISearchableProtocol>();
 	private ZookeeperService zkService = new ZookeeperService();
