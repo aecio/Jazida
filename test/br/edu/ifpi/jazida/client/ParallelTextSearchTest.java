@@ -62,7 +62,7 @@ public class ParallelTextSearchTest {
 		returnedFields.add(Metadata.AUTHOR.getValue());
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult resultado = searcher.search(fields, returnedFields, 1, 10, Metadata.ID.getValue(), false);
@@ -86,7 +86,7 @@ public class ParallelTextSearchTest {
 		returnedFields.add(Metadata.AUTHOR.getValue());
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult resultado = searcher.search(fields, returnedFields, 1, 10, Metadata.ID.getValue(), false);
@@ -106,7 +106,7 @@ public class ParallelTextSearchTest {
 		//dado
 		Map<String, String> fields = new HashMap<String, String>();
 		List<String> returnedFields = new ArrayList<String>();
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult resultado = searcher.search(fields, returnedFields, 1, 10, null, false);
@@ -124,7 +124,7 @@ public class ParallelTextSearchTest {
 	public void deveriaRetornarInvalidQueryQuandoFieldsEhNull() throws Exception {
 		//dado
 		List<String> returnedFields = new ArrayList<String>();
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult resultado = searcher.search(null, returnedFields, 1, 10, null, false);
@@ -149,7 +149,7 @@ public class ParallelTextSearchTest {
 		
 		List<String> returnedFields = new ArrayList<String>();
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 
 		//quando
 		SearchResult searchResult = searcher.search(fields, returnedFields, 1, 10, null, false);
@@ -169,7 +169,7 @@ public class ParallelTextSearchTest {
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put(Metadata.CONTENT.getValue(), "alice");
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, null, false);
@@ -192,7 +192,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add("diaEmQueOAutorNasceu");
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 
 		//quando
 		SearchResult searchResult = searcher.search(fields, returnedFields, 1, 10, null, false);
@@ -215,7 +215,7 @@ public class ParallelTextSearchTest {
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put(Metadata.CONTENT.getValue(), "Rodrigo Barbosa Reis");
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, null, false);
@@ -238,7 +238,7 @@ public class ParallelTextSearchTest {
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put("campoQueNaoExisteNoIndice", "Um valor qualquer para ser buscado");
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, null, false);
@@ -258,7 +258,7 @@ public class ParallelTextSearchTest {
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put(Metadata.CONTENT.getValue(), "Aécio");
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, null, false);
@@ -333,7 +333,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, Metadata.ID.getValue());
@@ -357,7 +357,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, Metadata.ID.getValue(), true);
@@ -380,7 +380,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, 10, Metadata.ID.getValue(), false);
@@ -405,7 +405,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, -1, 10, null);
@@ -429,7 +429,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult1 = searcher.search(fields, null, 1, 10, null);
@@ -460,7 +460,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult1 = searcher.search(fields, null, 1, 10, null);
@@ -491,7 +491,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 0, 10, null);
@@ -514,7 +514,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1000, 10, null, false);
@@ -528,7 +528,7 @@ public class ParallelTextSearchTest {
 	 * Teste de busca com batchSize negativo e espera SUCCESS
 	 */
 	@Test
-	public void deveruaRetornarSuccessMesmoComBatchSizeComValorNegativo() throws Exception {
+	public void deveriaRetornarSuccessMesmoComBatchSizeComValorNegativo() throws Exception {
 		//dado
 		Map<String, String> fields = new HashMap<String, String>();
 		fields.put(Metadata.CONTENT.getValue(), "Aécio");
@@ -536,7 +536,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, null, 1, -1, null, false);
@@ -560,7 +560,7 @@ public class ParallelTextSearchTest {
 		List<String> returnedFields = new ArrayList<String>();
 		returnedFields.add(Metadata.TITLE.getValue());
 		
-		ParallelTextSearcherClient searcher = new ParallelTextSearcherClient();
+		DistributedTextSearcherClient searcher = new DistributedTextSearcherClient();
 		
 		//quando
 		SearchResult searchResult = searcher.search(fields, returnedFields, 1, 10, null, false);

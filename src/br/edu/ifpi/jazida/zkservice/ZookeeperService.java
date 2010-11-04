@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.zkservice;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,9 +8,10 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 
-import br.edu.ifpi.jazida.nio.Serializer;
-import br.edu.ifpi.jazida.util.ConnectionWatcher;
+import br.edu.ifpi.jazida.node.DataNode;
+import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.util.DataNodeConf;
+import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
 
 /**

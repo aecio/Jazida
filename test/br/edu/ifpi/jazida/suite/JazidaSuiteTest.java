@@ -6,9 +6,7 @@ import org.junit.runners.Suite;
 import br.edu.ifpi.jazida.client.ParallelTextSearchTest;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
 import br.edu.ifpi.jazida.client.TextIndexerClientTest;
-import br.edu.ifpi.jazida.client.TextSearchClientTest;
 import br.edu.ifpi.jazida.node.NodeStatusTest;
-import br.edu.ifpi.jazida.node.TextSearchProtocolTest;
 import br.edu.ifpi.jazida.node.ZookeeperServiceTest;
 import br.edu.ifpi.jazida.util.JazidaConfTest;
 import br.edu.ifpi.jazida.util.WritableUtilsTest;
@@ -18,9 +16,9 @@ import br.edu.ifpi.jazida.util.WritableUtilsTest;
 @Suite.SuiteClasses({
 	RoundRobinPartitionPolicyTest.class,
 	TextIndexerClientTest.class,
-	TextSearchClientTest.class,
+	//TextSearchClientTest.class,
 	NodeStatusTest.class,
-	TextSearchProtocolTest.class,
+	//TextSearchProtocolTest.class,
 	ZookeeperServiceTest.class,
 	JazidaConfTest.class,
 	WritableUtilsTest.class,

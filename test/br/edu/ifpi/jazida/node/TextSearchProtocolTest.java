@@ -13,6 +13,7 @@ import org.apache.hadoop.io.Text;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import br.edu.ifpi.jazida.node.protocol.TextSearchProtocol;
 import br.edu.ifpi.jazida.util.FileUtilsForTest;
 import br.edu.ifpi.jazida.util.UtilForTest;
 import br.edu.ifpi.jazida.writable.SearchResultWritable;
@@ -20,6 +21,7 @@ import br.edu.ifpi.opala.utils.Metadata;
 import br.edu.ifpi.opala.utils.Path;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
+@Deprecated
 public class TextSearchProtocolTest {
 
 	private static final String SAMPLE_DATA_FOLDER = "./sample-data/texts";

@@ -8,8 +8,11 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.RPC.Server;
 import org.apache.log4j.Logger;
 
+import br.edu.ifpi.jazida.node.protocol.ITextSearchProtocol;
+import br.edu.ifpi.jazida.node.protocol.TextSearchProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
 
+@Deprecated
 public class TextSearcherServer  {
 	
 	private Logger LOG = Logger.getLogger(TextSearcherServer.class);

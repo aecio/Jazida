@@ -62,10 +62,10 @@ public class TextIndexerClientTest {
 		String texto = conteudoDoArquivo(aliceTxt);
 
 		// Quando
-		Integer code = textIndexerClient.addText(metaDocument, texto);
+		ReturnMessage message = textIndexerClient.addText(metaDocument, texto);
 
 		// Então
-		assertThat(code, is(ReturnMessage.SUCCESS.getCode()));
+		assertThat(message, is(ReturnMessage.SUCCESS));
 	}
 
 }

@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.IntWritable;
@@ -8,6 +8,7 @@ import org.apache.hadoop.ipc.VersionedProtocol;
 
 import br.edu.ifpi.jazida.writable.SearchResultWritable;
 
+@Deprecated
 public interface ITextSearchProtocol extends VersionedProtocol {
 	
 	public static final long versionID = 0;

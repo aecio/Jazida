@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.nio;
+package br.edu.ifpi.jazida.writable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

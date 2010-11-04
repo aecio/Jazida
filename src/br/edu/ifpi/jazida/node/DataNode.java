@@ -12,10 +12,11 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
-import br.edu.ifpi.jazida.nio.Serializer;
-import br.edu.ifpi.jazida.util.ConnectionWatcher;
+import br.edu.ifpi.jazida.node.protocol.TextSearchableProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
+import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
+import br.edu.ifpi.jazida.zkservice.ConnectionWatcher;
 import br.edu.ifpi.opala.utils.Path;
 
 /**
@@ -29,9 +30,8 @@ import br.edu.ifpi.opala.utils.Path;
 public class DataNode extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
-	private TextIndexerServer indexerServer;
-	private TextSearcherServer searchServer;
-	private SearchableServer searchableServer;
+	private TextIndexerServer textIndexerServer;
+	private TextSearchableServer textSearchableServer;
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
@@ -109,9 +109,8 @@ public class DataNode extends ConnectionWatcher {
 						boolean lock) 
 	throws IOException, InterruptedException, KeeperException {
 
-		LOG.info("-----------------------------------");
+		LOG.info("-------------------------------------");
 		LOG.info("Conectando-se ao Zookeeper Service...");
-		LOG.info("-----------------------------------");
 
 		super.connect(ZkConf.ZOOKEEPER_SERVERS);
 
@@ -121,39 +120,35 @@ public class DataNode extends ConnectionWatcher {
 										textSearchServerPort);
 
 		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
-			zk.create(DataNodeConf.DATANODES_PATH, null, Ids.OPEN_ACL_UNSAFE,
-					CreateMode.PERSISTENT);
+			zk.create(	DataNodeConf.DATANODES_PATH, 
+						null, 
+						Ids.OPEN_ACL_UNSAFE,
+						CreateMode.PERSISTENT);
 		}
 
-		String path = DataNodeConf.DATANODES_PATH + "/"
-				+ InetAddress.getLocalHost().getHostName();
+		String path = DataNodeConf.DATANODES_PATH + "/" + InetAddress.getLocalHost().getHostName();
 		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-
 		LOG.info("----------------------------------------");
 		LOG.info("Conectado ao grupo: " + createdPath);
-		LOG.info("Agora, vou iniciar o servidor IPC/RPC");
-		LOG.info("----------------------------------------");
 
-		indexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
-		indexerServer.start(lock);
 
-		searchServer = new TextSearcherServer(new TextSearchProtocol(), node.getHostname(), node.getTextSearchServerPort());
-		searchServer.start(lock);
-		
+		LOG.info("Iniciando o protocolo de RPC TextIndexerServer");
+		textIndexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
+		textIndexerServer.start(lock);
+
+		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
 		FSDirectory dir = FSDirectory.open(new File(Path.TEXT_INDEX.getValue()));
 		IndexSearcher searcher = new IndexSearcher(dir, true);
-		searchableServer = new SearchableServer(
-						new SearchableProtocol(searcher),
-						InetAddress.getLocalHost().getHostName(),
-						DataNodeConf.TEXT_SEARCH_SERVER_PORT+1 );
-		searchableServer.start(lock);
+		textSearchableServer = new TextSearchableServer(new TextSearchableProtocol(searcher),
+												node.getHostname(),
+												node.getTextSearchServerPort());
+		textSearchableServer.start(lock);
 		
 	}
 	
 	public void stop() throws InterruptedException {
 		super.disconnect();
-		indexerServer.stop();
-		searchServer.stop();
-		searchableServer.stop();
+		textIndexerServer.stop();
+		textSearchableServer.stop();
 	}
 }

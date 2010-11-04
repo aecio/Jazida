@@ -17,7 +17,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.search.Weight;
 
-import br.edu.ifpi.jazida.node.ISearchableProtocol;
+import br.edu.ifpi.jazida.node.protocol.ITextSearchableProtocol;
 import br.edu.ifpi.jazida.writable.FieldSelectorWritable;
 import br.edu.ifpi.jazida.writable.FilterWritable;
 import br.edu.ifpi.jazida.writable.QueryWritable;
@@ -27,9 +27,9 @@ import br.edu.ifpi.jazida.writable.WeightWritable;
 
 public class RemoteSearchableAdapter implements Searchable {
 	
-	ISearchableProtocol searchableProxy;
+	ITextSearchableProtocol searchableProxy;
 	
-	public RemoteSearchableAdapter(ISearchableProtocol searchableProxy) {
+	public RemoteSearchableAdapter(ITextSearchableProtocol searchableProxy) {
 		this.searchableProxy = searchableProxy;
 	}
 

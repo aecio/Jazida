@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.ipc.VersionedProtocol;
@@ -15,7 +15,7 @@ import br.edu.ifpi.jazida.writable.TopDocsWritable;
 import br.edu.ifpi.jazida.writable.TopFieldDocsWritable;
 import br.edu.ifpi.jazida.writable.WeightWritable;
 
-public interface ISearchableProtocol extends VersionedProtocol {
+public interface ITextSearchableProtocol extends VersionedProtocol {
 	
 	public static final long versionID = 0;
 	

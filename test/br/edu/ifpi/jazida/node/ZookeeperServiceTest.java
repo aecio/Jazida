@@ -12,8 +12,9 @@ import java.util.List;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
 
-import br.edu.ifpi.jazida.nio.Serializer;
 import br.edu.ifpi.jazida.util.DataNodeConf;
+import br.edu.ifpi.jazida.util.Serializer;
+import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 
 public class ZookeeperServiceTest {
 

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.Writable;
 
-import br.edu.ifpi.jazida.nio.Serializer;
+import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.opala.searching.SearchResult;
 
 public class SearchResultWritable implements Writable {

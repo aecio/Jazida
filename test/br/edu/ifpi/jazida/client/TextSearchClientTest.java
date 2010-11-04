@@ -24,7 +24,7 @@ import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.utils.Metadata;
 import br.edu.ifpi.opala.utils.Path;
 import br.edu.ifpi.opala.utils.ReturnMessage;
-
+@Deprecated
 public class TextSearchClientTest {
 	
 	private static final String SAMPLE_DATA_FOLDER = "./sample-data/texts";

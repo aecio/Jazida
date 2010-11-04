@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
 import java.io.IOException;
 
@@ -23,12 +23,12 @@ import br.edu.ifpi.jazida.writable.TopDocsWritable;
 import br.edu.ifpi.jazida.writable.TopFieldDocsWritable;
 import br.edu.ifpi.jazida.writable.WeightWritable;
 
-public class SearchableProtocol implements ISearchableProtocol {
+public class TextSearchableProtocol implements ITextSearchableProtocol {
 	
-	private static final Logger LOG = Logger.getLogger(SearchableProtocol.class);
+	private static final Logger LOG = Logger.getLogger(TextSearchableProtocol.class);
 	public IndexSearcher searcher;
 	
-	public SearchableProtocol(IndexSearcher searcher) {
+	public TextSearchableProtocol(IndexSearcher searcher) {
 		super();
 		this.searcher = searcher;
 	}
@@ -43,7 +43,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			searcher.close();
 		}catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.close()");
+			LOG.error("Falha em TextSearchableProtocol.close()");
 			LOG.error(e);
 		}
 	}
@@ -53,10 +53,10 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new DocumentWritable(searcher.doc(arg0.get()));
 		} catch (CorruptIndexException e) {
-			LOG.error("Falha em SearchableProtocol.doc(IntWritable)");
+			LOG.error("Falha em TextSearchableProtocol.doc(IntWritable)");
 			LOG.error(e);
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.doc(IntWritable)");
+			LOG.error("Falha em TextSearchableProtocol.doc(IntWritable)");
 			LOG.error(e);
 		}
 		return null;
@@ -68,7 +68,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 			Document doc = searcher.doc(arg0.get(), arg1.getFieldSelector());
 			return new DocumentWritable(doc);
 		} catch (Exception e) {
-			LOG.error("Falha em SearchableProtocol.doc(IntWritable, FieldSelector)");
+			LOG.error("Falha em TextSearchableProtocol.doc(IntWritable, FieldSelector)");
 			LOG.error(e);
 		};
 		return null;
@@ -79,7 +79,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new IntWritable(searcher.docFreq(arg0.getTerm()));
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.docFreqs(TermWritable[])");
+			LOG.error("Falha em TextSearchableProtocol.docFreqs(TermWritable[])");
 			LOG.error(e);
 		}
 		return null;
@@ -102,7 +102,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 			
 			return freqs;
 		} catch (IOException e) {
-			LOG.error("Falha SearchableProtocol.docFreqs(TermWritable[])");
+			LOG.error("Falha TextSearchableProtocol.docFreqs(TermWritable[])");
 			LOG.error(e);
 			return null;
 		}
@@ -113,7 +113,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new ExplanationWritable(searcher.explain(arg0.getWeight(), arg1.get()));
 		} catch (IOException e) {
-			LOG.error("Falha SearchableProtocol.explain()");
+			LOG.error("Falha TextSearchableProtocol.explain()");
 			LOG.error(e);
 			return null;
 		}
@@ -124,7 +124,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new IntWritable(searcher.maxDoc());
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.maxDoc()");
+			LOG.error("Falha em TextSearchableProtocol.maxDoc()");
 			LOG.error(e);
 			return null;
 		}
@@ -135,7 +135,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 		try {
 			return new QueryWritable(searcher.rewrite(arg0.getQuery()));
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.rewrite(QueryWritable)");
+			LOG.error("Falha em TextSearchableProtocol.rewrite(QueryWritable)");
 			LOG.error(e);
 			return null;
 		}
@@ -158,7 +158,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 			TopDocs search = searcher.search(arg0.getWeight(), arg1.getFilter(), arg2.get());
 			return new TopDocsWritable(search);
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.search()");
+			LOG.error("Falha em TextSearchableProtocol.search()");
 			LOG.error(e);
 			return null;
 		}
@@ -176,7 +176,7 @@ public class SearchableProtocol implements ISearchableProtocol {
 													arg3.getSort());
 			return new TopFieldDocsWritable(topdocs);
 		} catch (IOException e) {
-			LOG.error("Falha em SearchableProtocol.search(WeightWritable,FilterWritable,IntWritable,SortWritabl)");
+			LOG.error("Falha em TextSearchableProtocol.search(WeightWritable,FilterWritable,IntWritable,SortWritabl)");
 			LOG.error(e);
 			return null;
 		}

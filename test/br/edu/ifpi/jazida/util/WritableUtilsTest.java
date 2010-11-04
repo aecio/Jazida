@@ -16,7 +16,7 @@ import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.junit.Test;
 
-import br.edu.ifpi.jazida.nio.WritableUtils;
+import br.edu.ifpi.jazida.writable.WritableUtils;
 
 public class WritableUtilsTest {
 

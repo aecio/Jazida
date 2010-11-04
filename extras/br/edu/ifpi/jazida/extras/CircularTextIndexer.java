@@ -13,7 +13,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.RPC;
 
-import br.edu.ifpi.jazida.node.ITextIndexerProtocol;
+import br.edu.ifpi.jazida.node.protocol.ITextIndexerProtocol;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.utils.MetaDocument;
 

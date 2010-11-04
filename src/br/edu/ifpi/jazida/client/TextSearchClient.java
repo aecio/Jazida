@@ -1,9 +1,9 @@
 package br.edu.ifpi.jazida.client;
 
-import static br.edu.ifpi.jazida.nio.WritableUtils.convertIntToIntWritable;
-import static br.edu.ifpi.jazida.nio.WritableUtils.convertMapToMapWritable;
-import static br.edu.ifpi.jazida.nio.WritableUtils.convertStringListToTextArray;
-import static br.edu.ifpi.jazida.nio.WritableUtils.convertStringToText;
+import static br.edu.ifpi.jazida.writable.WritableUtils.convertIntToIntWritable;
+import static br.edu.ifpi.jazida.writable.WritableUtils.convertMapToMapWritable;
+import static br.edu.ifpi.jazida.writable.WritableUtils.convertStringListToTextArray;
+import static br.edu.ifpi.jazida.writable.WritableUtils.convertStringToText;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
-import br.edu.ifpi.jazida.node.ITextSearchProtocol;
 import br.edu.ifpi.jazida.node.NodeStatus;
-import br.edu.ifpi.jazida.node.ZookeeperService;
+import br.edu.ifpi.jazida.node.protocol.ITextSearchProtocol;
+import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.searching.ResultItem;
 import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.utils.ReturnMessage;
@@ -33,6 +33,7 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
  * @author Aécio Santos
  * 
  */
+@Deprecated
 public class TextSearchClient {
 
 	private static final Logger LOG = Logger.getLogger(TextSearchClient.class);

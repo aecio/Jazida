@@ -1,6 +1,6 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
-import static br.edu.ifpi.jazida.nio.WritableUtils.*;
+import static br.edu.ifpi.jazida.writable.WritableUtils.*;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import br.edu.ifpi.jazida.writable.SearchResultWritable;
 import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.searching.TextSearcherImpl;
-
+@Deprecated
 public class TextSearchProtocol implements ITextSearchProtocol {
 	
 	private Logger LOG = Logger.getLogger(TextSearchProtocol.class);

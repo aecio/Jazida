@@ -7,6 +7,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.RPC.Server;
 
+import br.edu.ifpi.jazida.node.protocol.ITextIndexerProtocol;
+import br.edu.ifpi.jazida.node.protocol.TextIndexerProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
 
 /**

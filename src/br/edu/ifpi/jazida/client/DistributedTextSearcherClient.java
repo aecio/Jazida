@@ -18,44 +18,46 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.ParallelMultiSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Searchable;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.apache.zookeeper.KeeperException;
 
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
-import br.edu.ifpi.jazida.node.ISearchableProtocol;
 import br.edu.ifpi.jazida.node.NodeStatus;
-import br.edu.ifpi.jazida.node.ZookeeperService;
+import br.edu.ifpi.jazida.node.protocol.ITextSearchableProtocol;
+import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.searching.ResultItem;
 import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.searching.TextSearcher;
 import br.edu.ifpi.opala.utils.Metadata;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
-public class ParallelTextSearcherClient implements TextSearcher {
+public class DistributedTextSearcherClient implements TextSearcher {
 	
-	private static final Logger LOG = Logger.getLogger(ParallelTextSearcherClient.class);
+	private static final Logger LOG = Logger.getLogger(DistributedTextSearcherClient.class);
 	private static final Configuration HADOOP_CONF = new Configuration();
 	private ParallelMultiSearcher searcher;
 	private List<NodeStatus> datanodes;
-	private Map<String, ISearchableProtocol> proxyMap = new HashMap<String, ISearchableProtocol>();
+	private Map<String, ITextSearchableProtocol> proxyMap = new HashMap<String, ITextSearchableProtocol>();
 	private ZookeeperService zkService = new ZookeeperService();
 	
-	public ParallelTextSearcherClient() throws IOException, KeeperException, InterruptedException {
-		LOG.info("Inicializando ParallelMultiSearchClient");
-
+	public DistributedTextSearcherClient() 
+	throws IOException, KeeperException, InterruptedException {
+		LOG.info("Inicializando ParallelTextSearcherClient");
 		this.datanodes = zkService.getDataNodes();
 
 		if (datanodes.size()==0) {
 			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
 		}
-		RemoteSearchableAdapter[] searchables = new RemoteSearchableAdapter[datanodes.size()];
+		Searchable[] searchables = new RemoteSearchableAdapter[datanodes.size()];
 		int i=0;
 		for (NodeStatus node : datanodes) {
 			final InetSocketAddress hostAdress = new InetSocketAddress(
-					node.getAddress(), node.getTextSearchServerPort()+1);
-			ISearchableProtocol searchableClient = getSearchableProxy(hostAdress);
+							node.getAddress(),
+							node.getTextSearchServerPort());
+			ITextSearchableProtocol searchableClient = getSearchableProxy(hostAdress);
 			proxyMap.put(node.getHostname(), searchableClient);
 			searchables[i] = new RemoteSearchableAdapter(searchableClient);
 			i++;
@@ -64,12 +66,12 @@ public class ParallelTextSearcherClient implements TextSearcher {
 		searcher = new ParallelMultiSearcher(searchables);
 	}
 	
-	private ISearchableProtocol getSearchableProxy(
+	private ITextSearchableProtocol getSearchableProxy(
 			final InetSocketAddress hostAdress) throws IOException {
 		
-		ISearchableProtocol proxy = (ISearchableProtocol) RPC.getProxy(
-											ISearchableProtocol.class,
-											ISearchableProtocol.versionID,
+		ITextSearchableProtocol proxy = (ITextSearchableProtocol) RPC.getProxy(
+											ITextSearchableProtocol.class,
+											ITextSearchableProtocol.versionID,
 											hostAdress, HADOOP_CONF);
 		return proxy;
 	}

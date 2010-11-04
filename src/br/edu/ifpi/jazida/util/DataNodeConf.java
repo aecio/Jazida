@@ -9,6 +9,10 @@ import br.edu.ifpi.jazida.node.DataNode;
  */
 public class DataNodeConf {
 	public static final String DATANODES_PATH ="/jazida";
+	
 	public static final int TEXT_INDEXER_SERVER_PORT = 16000;
 	public static final int TEXT_SEARCH_SERVER_PORT = 16001;
+	
+	public static final int IMAGE_INDEXER_SERVER_PORT = 16100;
+	public static final int IMAGE_SEARCH_SERVER_PORT = 16101;
 }

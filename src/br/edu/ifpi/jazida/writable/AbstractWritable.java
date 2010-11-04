@@ -8,7 +8,7 @@ import java.io.Serializable;
 import org.apache.hadoop.io.Writable;
 import org.apache.log4j.Logger;
 
-import br.edu.ifpi.jazida.nio.Serializer;
+import br.edu.ifpi.jazida.util.Serializer;
 
 public abstract class AbstractWritable implements Writable {
 	private static final Logger LOG = Logger.getLogger(AbstractWritable.class); 

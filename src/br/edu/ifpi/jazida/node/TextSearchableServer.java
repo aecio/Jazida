@@ -11,17 +11,19 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 
+import br.edu.ifpi.jazida.node.protocol.ITextSearchableProtocol;
+import br.edu.ifpi.jazida.node.protocol.TextSearchableProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.opala.utils.Path;
 
-public class SearchableServer {
+public class TextSearchableServer {
 	
-	private Logger LOG = Logger.getLogger(SearchableServer.class);
+	private Logger LOG = Logger.getLogger(TextSearchableServer.class);
 	private Server searchServer;
 	private static final Configuration HADOOP_CONF = new Configuration();
 	
 	/**
-	 * Inicia um servidor RPC para interface {@link ITextSearchProtocol} no host
+	 * Inicia um servidor RPC para interface {@link ITextSearchableProtocol} no host
 	 * local, na porta configurada em DataNodeConf.DEFAULT_PORT.
 	 * 
 	 * @param args
@@ -30,10 +32,10 @@ public class SearchableServer {
 		try {
 			FSDirectory dir = FSDirectory.open(new File(Path.TEXT_INDEX.getValue()));
 			IndexSearcher searcher = new IndexSearcher(dir, true);
-			SearchableServer server = new SearchableServer(
-							new SearchableProtocol(searcher),
+			TextSearchableServer server = new TextSearchableServer(
+							new TextSearchableProtocol(searcher),
 							InetAddress.getLocalHost().getHostName(),
-							DataNodeConf.TEXT_SEARCH_SERVER_PORT+1 );
+							DataNodeConf.TEXT_SEARCH_SERVER_PORT );
 			server.start(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,7 +50,7 @@ public class SearchableServer {
 	 * @param port A port que o servidor receberá chamadas RPC
 	 * @throws IOException
 	 */
-	public SearchableServer(ISearchableProtocol searchableProtocol, String serverName, int port) throws IOException {
+	public TextSearchableServer(ITextSearchableProtocol searchableProtocol, String serverName, int port) throws IOException {
 		LOG.info("Iniciando servidor de RPC SearchableServer na porta "+port);
 		this.searchServer = RPC.getServer(searchableProtocol, serverName, port, HADOOP_CONF);
 	}
