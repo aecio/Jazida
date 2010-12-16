@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
+
 import br.edu.ifpi.opala.indexing.TextIndexer;
 import br.edu.ifpi.opala.indexing.TextIndexerImpl;
 import br.edu.ifpi.opala.indexing.parser.TxtParser;
@@ -13,6 +15,8 @@ import br.edu.ifpi.opala.utils.MetaDocument;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
 public class UtilForTest {
+	
+	public static final Logger LOG = Logger.getLogger(UtilForTest.class);
 	
 	public static MetaDocument novoMetaDocumento(String title, String author, File arquivo) {
 		MetaDocument metadoc = new MetaDocument();
@@ -52,23 +56,20 @@ public class UtilForTest {
 				String texto = new TxtParser().getContent(is);
 				is.close();
 				if (texto == null) {
-					System.out.println("O documento \"" + name
-							+ "\" não pode ser EXTRAÍDO");
+					LOG.info("O documento \"" + name + "\" não pode ser extraído.");
 				} else {
-					TextIndexer textIndexer = TextIndexerImpl
-							.getTextIndexerImpl();
+					TextIndexer textIndexer = TextIndexerImpl.getTextIndexerImpl();
 					MetaDocument metaDoc = createMetaDocument(name);
-					if (textIndexer.addText(metaDoc, texto).equals(
-							ReturnMessage.SUCCESS)
-							|| textIndexer.addText(metaDoc, texto).equals(
-									ReturnMessage.DUPLICATED_ID))
+					if (textIndexer.addText(metaDoc, texto).equals(ReturnMessage.SUCCESS)
+						|| textIndexer.addText(metaDoc, texto).equals(ReturnMessage.DUPLICATED_ID)) {
 						return true;
+					}
 				}
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				LOG.error(e);
 				return false;
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.error(e);
 				return false;
 			}
 			return false;

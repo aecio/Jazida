@@ -34,12 +34,18 @@ public class ConnectionWatcher implements Watcher {
 	public void process(WatchedEvent event) {
 		if (event.getState() == KeeperState.SyncConnected) {
 			connectedSignal.countDown();
-			LOG.info("Conectado.");
+			LOG.info("Conectado ao Zookeeper.");
 		}
 	}
 
 	public void disconnect() throws InterruptedException {
+		LOG.info("Desconectando-se ao Zookeeper...");
 		zk.close();
+		//
+		// TODO: Esperar até que o zookeeper client desconecte.
+		// Verificar uma melhor forma de fazer isso. Talvez recebendo 
+		// notificação de conexão expirada (KeeperState.Expired)?
+		//
 	}
 
 }

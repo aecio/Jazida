@@ -9,7 +9,7 @@ import br.edu.ifpi.jazida.client.TextIndexerClientTest;
 import br.edu.ifpi.jazida.node.NodeStatusTest;
 import br.edu.ifpi.jazida.node.ZookeeperServiceTest;
 import br.edu.ifpi.jazida.util.JazidaConfTest;
-import br.edu.ifpi.jazida.util.WritableUtilsTest;
+import br.edu.ifpi.jazida.writable.WritableUtilsTest;
 
 
 @RunWith(Suite.class)

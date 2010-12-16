@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.util;
+package br.edu.ifpi.jazida.writable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;

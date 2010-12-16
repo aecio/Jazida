@@ -6,8 +6,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.br.BrazilianAnalyzer;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.util.Version;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -136,8 +141,11 @@ public class DataNode extends ConnectionWatcher {
 		textIndexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
 		textIndexerServer.start(lock);
 
+		
 		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
-		FSDirectory dir = FSDirectory.open(new File(Path.TEXT_INDEX.getValue()));
+		File indexPath = new File(Path.TEXT_INDEX.getValue());
+		createIndexIfNotExists(indexPath);
+		FSDirectory dir = FSDirectory.open(indexPath);
 		IndexSearcher searcher = new IndexSearcher(dir, true);
 		textSearchableServer = new TextSearchableServer(new TextSearchableProtocol(searcher),
 												node.getHostname(),
@@ -145,10 +153,17 @@ public class DataNode extends ConnectionWatcher {
 		textSearchableServer.start(lock);
 		
 	}
+
+	private void createIndexIfNotExists(File indexPath) throws CorruptIndexException, LockObtainFailedException, IOException {
+		IndexWriter indexWriter = new IndexWriter(	FSDirectory.open(indexPath),
+													new BrazilianAnalyzer(Version.LUCENE_30),
+													IndexWriter.MaxFieldLength.UNLIMITED);
+		indexWriter.close();
+	}
 	
 	public void stop() throws InterruptedException {
-		super.disconnect();
 		textIndexerServer.stop();
 		textSearchableServer.stop();
+		super.disconnect();
 	}
 }
