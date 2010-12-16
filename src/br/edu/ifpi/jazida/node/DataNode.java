@@ -35,22 +35,30 @@ import br.edu.ifpi.opala.utils.Path;
 public class DataNode extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
+
 	private TextIndexerServer textIndexerServer;
 	private TextSearchableServer textSearchableServer;
-	
 	private ImageIndexerServer imageIndexerServer;
 	private ImageSearcherServer imageSearcherServer;
+	
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
-	 * @param args
+	 * @throws UnknownHostException
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws KeeperException
 	 */
-	public static void main(String[] args) throws IOException,
-			InterruptedException, KeeperException {
-		new DataNode().start();
+	public void start() throws UnknownHostException, IOException,
+	InterruptedException, KeeperException {
+		
+		this.start(	InetAddress.getLocalHost().getHostName(), 
+				InetAddress.getLocalHost().getHostAddress(),
+				DataNodeConf.TEXT_INDEXER_SERVER_PORT,
+				DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+				DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
+				DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
+				true);
 	}
 
 	/**
@@ -74,26 +82,6 @@ public class DataNode extends ConnectionWatcher {
 					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
 					DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
 					lock);
-	}
-
-	/**
-	 * Inicia um {@link DataNode} com configurações do host local.
-	 * 
-	 * @throws UnknownHostException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws KeeperException
-	 */
-	public void start() throws UnknownHostException, IOException,
-			InterruptedException, KeeperException {
-
-		this.start(	InetAddress.getLocalHost().getHostName(), 
-					InetAddress.getLocalHost().getHostAddress(),
-					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
-					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
-					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
-					DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
-					true);
 	}
 
 	/**
@@ -142,7 +130,7 @@ public class DataNode extends ConnectionWatcher {
 						CreateMode.PERSISTENT);
 		}
 
-		String path = DataNodeConf.DATANODES_PATH + "/" + InetAddress.getLocalHost().getHostName();
+		String path = DataNodeConf.DATANODES_PATH + "/" + hostName;
 		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 		LOG.info("----------------------------------------");
 		LOG.info("Conectado ao grupo: " + createdPath);
@@ -150,16 +138,16 @@ public class DataNode extends ConnectionWatcher {
 		LOG.info("Iniciando o protocolo de RPC ImageIndexerServer");
 		File imageIndexPath = new File(Path.IMAGE_INDEX.getValue());
 		createIndexIfNotExists(imageIndexPath);
-		imageIndexerServer = new ImageIndexerServer(node.getHostname(), node.getImageIndexerServerPort());
+		imageIndexerServer = new ImageIndexerServer(node.getAddress(), node.getImageIndexerServerPort());
 		imageIndexerServer.start(false);
 
 		LOG.info("Iniciando o protocolo de RPC ImageSearchServer");
-		imageSearcherServer = new ImageSearcherServer(node.getHostname(), node.getImageSearcherServerPort());
+		imageSearcherServer = new ImageSearcherServer(node.getAddress(), node.getImageSearcherServerPort());
 		imageSearcherServer.start(false);
 		
 
 		LOG.info("Iniciando o protocolo de RPC TextIndexerServer");
-		textIndexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
+		textIndexerServer = new TextIndexerServer(node.getAddress(), node.getTextIndexerServerPort());
 		textIndexerServer.start(false);
 
 		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
@@ -168,7 +156,7 @@ public class DataNode extends ConnectionWatcher {
 		FSDirectory dir = FSDirectory.open(textIndexPath);
 		IndexSearcher searcher = new IndexSearcher(dir, true);
 		textSearchableServer = new TextSearchableServer(new TextSearchableProtocol(searcher),
-												node.getHostname(),
+												node.getAddress(),
 												node.getTextSearchServerPort());
 		textSearchableServer.start(lock);
 		
