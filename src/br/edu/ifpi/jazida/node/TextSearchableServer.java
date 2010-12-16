@@ -56,7 +56,7 @@ public class TextSearchableServer {
 	}
 
 	/**
-	 * Inicia um servidor RPC para interface {@link ITextSearchProtocol} no host
+	 * Inicia um servidor RPC para interface {@link ITextSearchableProtocol} no host
 	 * e porta passados no construtor. Se o paramêtro join for igual a true, a
 	 * Thread ficará bloqueada até que seja encerrada. Se for false, o servidor
 	 * será iniciado e a execução continuará normalmente.

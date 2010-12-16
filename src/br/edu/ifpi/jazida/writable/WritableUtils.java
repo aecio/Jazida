@@ -74,17 +74,17 @@ public class WritableUtils {
 	/**
 	 * Converte uma Lista de {@link String} para uma lista de {@link Text}.
 	 * 
-	 * @param list Um lista de {@link String}s.
+	 * @param list Uma lista de {@link String}s.
 	 * @return Uma lista de {@link Text}s equivalente à recebida.
 	 */
-	public static Text[] convertStringListToTextArray(List<String> lista) {
-		if(lista == null) {
+	public static Text[] convertStringListToTextArray(List<String> list) {
+		if(list == null) {
 			return null;
 		}
 		
-		Text[] textArray = new Text[lista.size()];
-		for (int i=0;i<lista.size();i++) {
-			textArray[i] = new Text(lista.get(i));
+		Text[] textArray = new Text[list.size()];
+		for (int i=0;i<list.size();i++) {
+			textArray[i] = new Text(list.get(i));
 		}
 		return textArray ;
 	}
