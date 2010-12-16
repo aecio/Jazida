@@ -10,8 +10,8 @@ public class NodeStatusTest {
 	@Test
 	public void deveriaSerIgualAoOutroComTodasPropriedadesIguais() {
 		//dado
-		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2);
-		NodeStatus host2 = new NodeStatus("host1", "1.1.1.1", 1, 2);
+		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2, 3, 4);
+		NodeStatus host2 = new NodeStatus("host1", "1.1.1.1", 1, 2, 3, 4);
 		
 		//quando
 		Boolean resultado = host1.equals(host2);
@@ -23,8 +23,8 @@ public class NodeStatusTest {
 	@Test
 	public void deveriaSerDiferenteComHostnamesDiferentes() {
 		//dado
-		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2);
-		NodeStatus host2 = new NodeStatus("host2", "1.1.1.1", 1, 2);
+		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2, 3, 4);
+		NodeStatus host2 = new NodeStatus("host2", "1.1.1.1", 1, 2, 3, 4);
 		//quando
 		boolean resultado = host1.equals(host2);
 		
@@ -35,8 +35,8 @@ public class NodeStatusTest {
 	@Test
 	public void deveriaSerDiferenteComEnderecoIpDiferentes() {
 		//dado
-		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2);
-		NodeStatus host2 = new NodeStatus("host1", "2.2.2.2", 1, 2);
+		NodeStatus host1 = new NodeStatus("host1", "1.1.1.1", 1, 2, 3, 4);
+		NodeStatus host2 = new NodeStatus("host1", "2.2.2.2", 1, 2, 3, 4);
 		
 		//quando
 		Boolean resultado = host1.equals(host2);

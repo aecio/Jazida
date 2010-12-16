@@ -11,18 +11,39 @@ import org.apache.log4j.Logger;
 import br.edu.ifpi.jazida.util.Serializer;
 
 public abstract class AbstractWritable implements Writable {
+	
 	private static final Logger LOG = Logger.getLogger(AbstractWritable.class); 
 	private static final long serialVersionUID = 1L;
+	
 	private Serializable object;
 	
-	public AbstractWritable(){}
+	public AbstractWritable(){
+		//Necessário para serialização
+	}
 	
 	public AbstractWritable(Serializable obj){
 		this.object = obj;
 	}
 	
 	protected Serializable getObject() {
-		return object;
+		if(object instanceof Exception)
+			return null;
+		else
+			return object;
+	}
+	
+	public boolean isError() {
+		if(object instanceof Exception)
+			return true;
+		else
+			return false;
+	}
+	
+	public Exception getException() {
+		if(object instanceof Exception)
+			return (Exception) object;
+		else
+			return null;
 	}
 
 	@Override

@@ -37,6 +37,9 @@ public class DataNode extends ConnectionWatcher {
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
 	private TextIndexerServer textIndexerServer;
 	private TextSearchableServer textSearchableServer;
+	
+	private ImageIndexerServer imageIndexerServer;
+	private ImageSearcherServer imageSearcherServer;
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
@@ -68,6 +71,8 @@ public class DataNode extends ConnectionWatcher {
 					InetAddress.getLocalHost().getHostAddress(),
 					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
 					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
+					DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
 					lock);
 	}
 
@@ -86,6 +91,8 @@ public class DataNode extends ConnectionWatcher {
 					InetAddress.getLocalHost().getHostAddress(),
 					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
 					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
+					DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
 					true);
 	}
 
@@ -111,6 +118,8 @@ public class DataNode extends ConnectionWatcher {
 						String hostAddress,
 						int textIndexerServerPort,
 						int textSearchServerPort,
+						int imageIndexerServerPort,
+						int imageSearchServerPort,
 						boolean lock) 
 	throws IOException, InterruptedException, KeeperException {
 
@@ -122,7 +131,9 @@ public class DataNode extends ConnectionWatcher {
 		NodeStatus node = new NodeStatus(hostName, 
 										hostAddress, 
 										textIndexerServerPort,
-										textSearchServerPort);
+										textSearchServerPort,
+										imageIndexerServerPort,
+										imageSearchServerPort);
 
 		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
 			zk.create(	DataNodeConf.DATANODES_PATH, 
@@ -136,21 +147,31 @@ public class DataNode extends ConnectionWatcher {
 		LOG.info("----------------------------------------");
 		LOG.info("Conectado ao grupo: " + createdPath);
 
+		LOG.info("Iniciando o protocolo de RPC ImageIndexerServer");
+		File imageIndexPath = new File(Path.IMAGE_INDEX.getValue());
+		createIndexIfNotExists(imageIndexPath);
+		imageIndexerServer = new ImageIndexerServer(node.getHostname(), node.getImageIndexerServerPort());
+		imageIndexerServer.start(false);
+
+		LOG.info("Iniciando o protocolo de RPC ImageSearchServer");
+		imageSearcherServer = new ImageSearcherServer(node.getHostname(), node.getImageSearcherServerPort());
+		imageSearcherServer.start(false);
+		
 
 		LOG.info("Iniciando o protocolo de RPC TextIndexerServer");
 		textIndexerServer = new TextIndexerServer(node.getHostname(), node.getTextIndexerServerPort());
-		textIndexerServer.start(lock);
+		textIndexerServer.start(false);
 
-		
 		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
-		File indexPath = new File(Path.TEXT_INDEX.getValue());
-		createIndexIfNotExists(indexPath);
-		FSDirectory dir = FSDirectory.open(indexPath);
+		File textIndexPath = new File(Path.TEXT_INDEX.getValue());
+		createIndexIfNotExists(textIndexPath);
+		FSDirectory dir = FSDirectory.open(textIndexPath);
 		IndexSearcher searcher = new IndexSearcher(dir, true);
 		textSearchableServer = new TextSearchableServer(new TextSearchableProtocol(searcher),
 												node.getHostname(),
 												node.getTextSearchServerPort());
 		textSearchableServer.start(lock);
+		
 		
 	}
 
@@ -164,6 +185,8 @@ public class DataNode extends ConnectionWatcher {
 	public void stop() throws InterruptedException {
 		textIndexerServer.stop();
 		textSearchableServer.stop();
+		imageIndexerServer.stop();
+		imageSearcherServer.stop();
 		super.disconnect();
 	}
 }

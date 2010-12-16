@@ -15,9 +15,9 @@ public class RoundRobinPartitionPolicyTest {
 	public void deveriaRetornarOsNosCircularmente() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
-		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16001, 15001);
-		NodeStatus node2 = new NodeStatus("host2", "127.0.0.1", 16002, 15002);
-		NodeStatus node3 = new NodeStatus("host3", "127.0.0.1", 16003, 15003);
+		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16001, 15001, 14001, 13001);
+		NodeStatus node2 = new NodeStatus("host2", "127.0.0.1", 16002, 15002, 14002, 13002);
+		NodeStatus node3 = new NodeStatus("host3", "127.0.0.1", 16003, 15003, 14003, 13003);
 		
 		nodes.add(node1);
 		nodes.add(node2);
@@ -42,7 +42,7 @@ public class RoundRobinPartitionPolicyTest {
 	public void deveriaRetornarSempreOMesmoNo() {
 		//Dado
 		List<NodeStatus> nodes = new ArrayList<NodeStatus>();
-		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16000,15000);
+		NodeStatus node1 = new NodeStatus("host1", "127.0.0.1", 16000,15000, 14000, 13000);
 		nodes.add(node1);
 		
 		//Quando

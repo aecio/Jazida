@@ -13,6 +13,8 @@
 	<classpathentry kind="lib" path="lib/test/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-analyzers-3.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/lire.jar"/>
+	<classpathentry kind="lib" path="lib/caliph-emir-cbir.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

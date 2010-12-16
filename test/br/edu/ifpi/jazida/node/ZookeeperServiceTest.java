@@ -21,7 +21,7 @@ public class ZookeeperServiceTest {
 	@Test
 	public void deveriaRetornarOsDataNodesConectadosAoZookeeper() throws Exception {
 		//Dado
-		NodeStatus dataNode1 = new NodeStatus("host1", "127.0.0.1", 16000, 16001);
+		NodeStatus dataNode1 = new NodeStatus("host1", "127.0.0.1", 16000, 16001, 17000, 17001);
 		
 		ZooKeeper zk =  mock(ZooKeeper.class);
 		when(zk.getChildren(DataNodeConf.DATANODES_PATH, false)).thenReturn(Arrays.asList("host1"));

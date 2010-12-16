@@ -15,14 +15,21 @@ public class NodeStatus implements Serializable {
 
 	private String hostname;
 	private String address; // Endereço IP do host
+	
 	private int textSearchServerPort;
 	private int textIndexerServerPort;
+
+	private int imageIndexerServerPort;
+	private int imageSeacherServerPort;
+
 	
-	public NodeStatus(String hostname, String address, int textIndexerServerPort, int textSearchServerPort) {
+	public NodeStatus(String hostname, String address, int textIndexerServerPort, int textSearchServerPort, int imageIndexerServerPort, int imageSearcherServerPort) {
 		this.hostname = hostname;
 		this.address = address;
 		this.textIndexerServerPort = textIndexerServerPort;
 		this.textSearchServerPort = textSearchServerPort;
+		this.imageIndexerServerPort = imageIndexerServerPort;
+		this.imageSeacherServerPort = imageSearcherServerPort;
 	}
 
 	public String getHostname() {
@@ -55,6 +62,27 @@ public class NodeStatus implements Serializable {
 
 	public void setTextIndexerServerPort(int textIndexerServerPort) {
 		this.textIndexerServerPort = textIndexerServerPort;
+	}
+
+	/**
+	 * @param imageIndexerServerPort the imageIndexerServerPort to set
+	 */
+	public void setImageIndexerServerPort(int imageIndexerServerPort) {
+		this.imageIndexerServerPort = imageIndexerServerPort;
+	}
+
+	/**
+	 * @return the imageIndexerServerPort
+	 */
+	public int getImageIndexerServerPort() {
+		return imageIndexerServerPort;
+	}
+	
+	/**
+	 * @return the imageSeacherServerPort
+	 */
+	public int getImageSearcherServerPort() {
+		return imageSeacherServerPort;
 	}
 
 	@Override
