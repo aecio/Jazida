@@ -3,7 +3,7 @@
 <project name="Jazida" basedir="." default="testAndBuild">
 
 	<!-- set global properties for this build -->
-	
+
 	<property name="dir.base" value="." />
 	<property name="dir.src" value="src" />
 	<property name="dir.src.class" value="build" />
@@ -13,23 +13,23 @@
 	<property name="dir.docs" value="docs" />
 
 	<property name="jar.name" value="${dir.base}/bin/jazida.jar" />
-	
+
 	<!-- Classpath's do Projeto -->
 	<path id="classpath.base">
 		<pathelement location="${dir.src}" />
 		<pathelement location="${dir.src.class}" />
 		<fileset dir="${dir.lib}">
-			<include name="**/*.jar"/>
+			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
+
 	<path id="classpath.test">
 		<pathelement location="${dir.test}" />
 		<pathelement location="${dir.test.class}" />
 		<path refid="classpath.base" />
 	</path>
 
-	
+
 	<!-- Compila o código-fonte -->
 	<target name="compile" description="Compila o codigo-fonte do projeto">
 		<echo>Compilando código-fonte...</echo>
@@ -38,12 +38,12 @@
 			<classpath refid="classpath.base" />
 		</javac>
 	</target>
-	
+
 	<!-- Compila os testes -->
 	<target name="compile-test">
 		<echo>Compilando testes...</echo>
 		<mkdir dir="${dir.test.class}" />
-		<javac srcdir="${dir.test}" destdir="${dir.test.class}" >
+		<javac srcdir="${dir.test}" destdir="${dir.test.class}">
 			<classpath refid="classpath.test" />
 		</javac>
 	</target>
@@ -62,25 +62,28 @@
 		</jar>
 		<echo>Arquivo ${dir.src}/${jar.name} criado com sucesso.</echo>
 	</target>
-	
+
 	<!-- Executa testes e cria o arquivo jar do Opala -->
 	<target name="testAndBuild">
-		<antcall target="test"></antcall>
-		<antcall target="createjar"></antcall>
-		<antcall target="javadoc"></antcall>
+		<antcall target="test">
+		</antcall>
+		<antcall target="createjar">
+		</antcall>
+		<antcall target="javadoc">
+		</antcall>
 		<echo>Build finalizado.</echo>
 	</target>
 
 	<!-- Executa os testes do Opala -->
-	<target name="test" depends="compile, compile-test" >
+	<target name="test" depends="compile, compile-test">
 		<echo>Executando suite de testes do Jazida...</echo>
-		<junit haltonfailure="false" haltonerror="false" showoutput="false" fork="true" dir="${dir.base}">
+		<junit haltonfailure="false" haltonerror="false" showoutput="no" fork="true" dir="${dir.base}">
 			<classpath refid="classpath.test" />
 			<formatter type="brief" usefile="false" />
 			<test name="br.edu.ifpi.jazida.suite.JazidaSuiteTest" />
 		</junit>
 	</target>
-	
+
 	<!-- Gera a documentação Javadoc do Jazida -->
 	<target name="javadoc">
 		<javadoc sourcepath="${dir.src}" destdir="${dir.docs}" encoding="utf-8" doctitle="Jazida API - Laboratório de Pesquisa em Sistemas de Informação">

@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
 import java.io.IOException;
 
@@ -8,7 +8,6 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.log4j.Logger;
 
-import br.edu.ifpi.jazida.node.protocol.IImageIndexerProtocol;
 import br.edu.ifpi.jazida.writable.BufferedImageWritable;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.indexing.ImageIndexerImpl;

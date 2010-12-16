@@ -1,10 +1,9 @@
-package br.edu.ifpi.jazida.node;
+package br.edu.ifpi.jazida.node.protocol;
 
 import java.io.IOException;
 
 import org.apache.hadoop.io.IntWritable;
 
-import br.edu.ifpi.jazida.node.protocol.IImageSearchProtocol;
 import br.edu.ifpi.jazida.writable.BufferedImageWritable;
 import br.edu.ifpi.jazida.writable.SearchResultWritable;
 import br.edu.ifpi.opala.searching.SearcherImage;

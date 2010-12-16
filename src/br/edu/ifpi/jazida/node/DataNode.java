@@ -17,6 +17,9 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 
+import br.edu.ifpi.jazida.node.protocol.ImageIndexerProtocol;
+import br.edu.ifpi.jazida.node.protocol.ImageSearcherProtocol;
+import br.edu.ifpi.jazida.node.protocol.TextIndexerProtocol;
 import br.edu.ifpi.jazida.node.protocol.TextSearchableProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.jazida.util.Serializer;
@@ -26,8 +29,8 @@ import br.edu.ifpi.opala.utils.Path;
 
 /**
  * Representa um nó conectado ao cluster Jazida. Durante sua inicialização,
- * publica-se no serviço do Zookeeper como disponível e inicializa um servidor
- * de chamada de procedimento remoto (RPC) na porta especificada.
+ * publica-se no serviço do Zookeeper como disponível e inicializa os servidores
+ * de chamada de procedimento remoto (RPC) nas portas especificadas.
  * 
  * @author Aécio Santos
  * 
@@ -36,10 +39,10 @@ public class DataNode extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
 
-	private TextIndexerServer textIndexerServer;
-	private TextSearchableServer textSearchableServer;
-	private ImageIndexerServer imageIndexerServer;
-	private ImageSearcherServer imageSearcherServer;
+	private RPCServer textIndexerServer;
+	private RPCServer textSearchableServer;
+	private RPCServer imageIndexerServer;
+	private RPCServer imageSearcherServer;
 	
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
@@ -65,15 +68,14 @@ public class DataNode extends ConnectionWatcher {
 	 * Inicia um {@link DataNode} com configurações do host local.
 	 * 
 	 * @param lock
-	 *            - Se a execução será bloqueada após a inicialização do
-	 *            {@link DataNode}.
+	 *   Se a execução deve ser bloqueada após a inicialização do {@link DataNode}.
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws KeeperException
 	 */
 	public void start(boolean lock) throws UnknownHostException, IOException,
-			InterruptedException, KeeperException {
+											InterruptedException, KeeperException {
 
 		this.start(	InetAddress.getLocalHost().getHostName(), 
 					InetAddress.getLocalHost().getHostAddress(),
@@ -102,8 +104,7 @@ public class DataNode extends ConnectionWatcher {
 	 * @throws InterruptedException
 	 * @throws KeeperException
 	 */
-	public void start(String hostName, 
-						String hostAddress,
+	public void start(String hostName, String hostAddress,
 						int textIndexerServerPort,
 						int textSearchServerPort,
 						int imageIndexerServerPort,
@@ -116,38 +117,34 @@ public class DataNode extends ConnectionWatcher {
 
 		super.connect(ZkConf.ZOOKEEPER_SERVERS);
 
-		NodeStatus node = new NodeStatus(hostName, 
-										hostAddress, 
+		NodeStatus node = new NodeStatus(hostName, hostAddress, 
 										textIndexerServerPort,
 										textSearchServerPort,
 										imageIndexerServerPort,
 										imageSearchServerPort);
 
-		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
-			zk.create(	DataNodeConf.DATANODES_PATH, 
-						null, 
-						Ids.OPEN_ACL_UNSAFE,
-						CreateMode.PERSISTENT);
-		}
-
-		String path = DataNodeConf.DATANODES_PATH + "/" + hostName;
-		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-		LOG.info("----------------------------------------");
-		LOG.info("Conectado ao grupo: " + createdPath);
+		registerOnZookepper(hostName, node);
 
 		LOG.info("Iniciando o protocolo de RPC ImageIndexerServer");
 		File imageIndexPath = new File(Path.IMAGE_INDEX.getValue());
 		createIndexIfNotExists(imageIndexPath);
-		imageIndexerServer = new ImageIndexerServer(node.getAddress(), node.getImageIndexerServerPort());
+		
+		imageIndexerServer = new RPCServer(new ImageIndexerProtocol(),
+													node.getAddress(),
+													node.getImageIndexerServerPort());
 		imageIndexerServer.start(false);
 
 		LOG.info("Iniciando o protocolo de RPC ImageSearchServer");
-		imageSearcherServer = new ImageSearcherServer(node.getAddress(), node.getImageSearcherServerPort());
+		imageSearcherServer = new RPCServer(new ImageSearcherProtocol(),
+											node.getAddress(),
+											node.getImageSearcherServerPort());
 		imageSearcherServer.start(false);
 		
 
 		LOG.info("Iniciando o protocolo de RPC TextIndexerServer");
-		textIndexerServer = new TextIndexerServer(node.getAddress(), node.getTextIndexerServerPort());
+		textIndexerServer = new RPCServer(	new TextIndexerProtocol(),
+											node.getAddress(),
+											node.getTextIndexerServerPort());
 		textIndexerServer.start(false);
 
 		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
@@ -155,12 +152,28 @@ public class DataNode extends ConnectionWatcher {
 		createIndexIfNotExists(textIndexPath);
 		FSDirectory dir = FSDirectory.open(textIndexPath);
 		IndexSearcher searcher = new IndexSearcher(dir, true);
-		textSearchableServer = new TextSearchableServer(new TextSearchableProtocol(searcher),
+		textSearchableServer = new RPCServer(new TextSearchableProtocol(searcher),
 												node.getAddress(),
 												node.getTextSearchServerPort());
-		textSearchableServer.start(lock);
+		textSearchableServer.start(lock);		
+	}
+
+	private void registerOnZookepper(String hostName, NodeStatus node)
+			throws KeeperException, InterruptedException, IOException {
 		
-		
+		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
+			
+			zk.create(	DataNodeConf.DATANODES_PATH, 
+						null, 
+						Ids.OPEN_ACL_UNSAFE,
+						CreateMode.PERSISTENT);
+			
+		}
+
+		String path = DataNodeConf.DATANODES_PATH + "/" + hostName;
+		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+
+		LOG.info("Conectado ao grupo: " + createdPath);
 	}
 
 	private void createIndexIfNotExists(File indexPath) throws CorruptIndexException, LockObtainFailedException, IOException {
