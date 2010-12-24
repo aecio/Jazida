@@ -46,13 +46,12 @@ public class TextIndexerClient extends ConnectionWatcher implements TextIndexer 
 
 	private static final Logger LOG = Logger.getLogger(TextIndexerClient.class);
 	private static Configuration HADOOP_CONFIGURATION = new Configuration();
-	private static PartitionPolicy<NodeStatus> partitionPolicy;
 	private Map<String, ITextIndexerProtocol> proxyMap = new HashMap<String, ITextIndexerProtocol>();
-	private ZookeeperService zkService = new ZookeeperService();
+	private ZookeeperService zkService;
 	private ExecutorService threadPool;
 
 	public TextIndexerClient() throws KeeperException, InterruptedException, IOException {
-		
+		zkService = new ZookeeperService(new RoundRobinPartitionPolicy());
 		List<NodeStatus> datanodes = zkService.getDataNodes();
 		if (datanodes.size()==0) 
 			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
@@ -63,8 +62,6 @@ public class TextIndexerClient extends ConnectionWatcher implements TextIndexer 
 			ITextIndexerProtocol opalaClient = getTextIndexerServer(socketAdress);
 			proxyMap.put(node.getHostname(), opalaClient);
 		}
-		
-		partitionPolicy = new RoundRobinPartitionPolicy(datanodes);
 		threadPool = Executors.newCachedThreadPool();
 	}
 
@@ -81,7 +78,7 @@ public class TextIndexerClient extends ConnectionWatcher implements TextIndexer 
 	public ReturnMessage addText(MetaDocument metaDocument, String content) {
 		
 		MetaDocumentWritable documentWrap = new MetaDocumentWritable(metaDocument);
-		NodeStatus node = partitionPolicy.nextNode();
+		NodeStatus node = zkService.nextNode();
 
 		LOG.info(node.getHostname()+": documento indexado: "+metaDocument.getId());
 

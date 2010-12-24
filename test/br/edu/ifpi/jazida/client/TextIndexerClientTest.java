@@ -110,7 +110,7 @@ public class TextIndexerClientTest {
 	
 	@Test
 	public void deveriaDevolverSuccessEAtualizarOsValoresDoDocumento() throws IOException, ParseException, KeeperException, InterruptedException {
-//		
+		fail("Rever este teste. Quando ele falha, causa falha em outros. Pq?");
 //		//dado
 //		dadoQueOArquivoAliceTxtFoiIndexadoComIdAlice();
 //		
@@ -129,7 +129,7 @@ public class TextIndexerClientTest {
 //		returnedFields.add(Metadata.TITLE.getValue());
 //		
 //		TextIndexerClient textIndexerClient = new TextIndexerClient();
-//		TextSearcher searcher = new DistributedTextSearcherClient();
+//		TextSearcher searcher = new TextSearcherClient();
 //		
 //		//quando
 //		SearchResult beforeUpdate = searcher.search(query, returnedFields , 0, 10, null);
@@ -140,18 +140,22 @@ public class TextIndexerClientTest {
 //		
 //		//entao
 //		assertThat(beforeUpdate.getCodigo(), is(ReturnMessage.SUCCESS));
+//		
 //		assertThat(theFirstTitleOfSearchResult(beforeUpdate),
 //				is("Alice's Adventures in Wonderland"));
 //		
 //		assertThat(resultUpdate, is(ReturnMessage.SUCCESS));
 //		
 //		assertThat(afterUpdate.getCodigo(), is(ReturnMessage.SUCCESS));
+//
 //		assertThat(theFirstTitleOfSearchResult(afterUpdate),
 //				is(tituloAtualizado));
-//
-		fail("rever esse teste!");
 	}
 
+//	private String theFirstTitleOfSearchResult(SearchResult beforeUpdate) {
+//		return beforeUpdate.getItem(0).getField(Metadata.TITLE.getValue());
+//	}
+	
 	private void dadoQueOArquivoAliceTxtFoiIndexadoComIdAlice()
 	throws KeeperException, InterruptedException, IOException {
 		
@@ -166,8 +170,5 @@ public class TextIndexerClientTest {
 		
 	}
 
-//	private String theFirstTitleOfSearchResult(SearchResult beforeUpdate) {
-//		return beforeUpdate.getItem(0).getField(Metadata.TITLE.getValue());
-//	}
 
 }

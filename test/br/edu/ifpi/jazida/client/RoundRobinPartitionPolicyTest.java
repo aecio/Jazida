@@ -24,7 +24,8 @@ public class RoundRobinPartitionPolicyTest {
 		nodes.add(node3);
 
 		//Quando
-		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy(nodes);
+		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy();
+		policy.addNode(nodes.toArray(new NodeStatus[nodes.size()]));
 		
 		//Então
 		assertTrue(policy.nextNode().equals(node1));
@@ -46,7 +47,8 @@ public class RoundRobinPartitionPolicyTest {
 		nodes.add(node1);
 		
 		//Quando
-		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy(nodes);
+		RoundRobinPartitionPolicy policy = new RoundRobinPartitionPolicy();
+		policy.addNode(nodes.toArray(new NodeStatus[nodes.size()]));
 		
 		//Então
 		assertTrue(policy.nextNode().equals(node1));
@@ -55,3 +57,4 @@ public class RoundRobinPartitionPolicyTest {
 	}
 	
 }
+

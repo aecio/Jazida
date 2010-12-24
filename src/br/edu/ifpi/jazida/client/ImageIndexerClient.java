@@ -30,27 +30,21 @@ public class ImageIndexerClient implements ImageIndexer {
 
 	private static final Logger LOG = Logger.getLogger(ImageIndexerClient.class);
 	private static Configuration HADOOP_CONFIGURATION = new Configuration();
-	private static PartitionPolicy<NodeStatus> partitionPolicy;
 	private HashMap<String,IImageIndexerProtocol> proxyMap = new HashMap<String, IImageIndexerProtocol>();
-	private ZookeeperService zkService = new ZookeeperService();
-//	private ExecutorService threadPool;
-	
+	private ZookeeperService zkService;
+
 	public ImageIndexerClient() throws KeeperException, InterruptedException, IOException {
-		
+		zkService = new ZookeeperService(new RoundRobinPartitionPolicy());
 		List<NodeStatus> datanodes = zkService.getDataNodes();
 		if (datanodes.size()==0) 
 			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
 		
-//		datanodes.add(new NodeStatus("aecio-laptop", "127.0.0.1", 16000, 16001, 17000));
 		for (NodeStatus node : datanodes) {
 			final InetSocketAddress socketAdress = new InetSocketAddress(node.getAddress(),
 																		 node.getImageIndexerServerPort());
 			IImageIndexerProtocol opalaClient = getImageIndexerProxy(socketAdress);
 			proxyMap.put(node.getHostname(), opalaClient);
 		}
-		
-		partitionPolicy = new RoundRobinPartitionPolicy(datanodes);
-//		threadPool = Executors.newCachedThreadPool();
 	}
 	
 	private IImageIndexerProtocol getImageIndexerProxy(final InetSocketAddress endereco)
@@ -64,7 +58,7 @@ public class ImageIndexerClient implements ImageIndexer {
 
 	@Override
 	public ReturnMessage addImage(MetaDocument metaDocument, BufferedImage image) {
-		NodeStatus node = partitionPolicy.nextNode();
+		NodeStatus node = zkService.nextNode();
 
 		LOG.info(node.getHostname()+": imagem indexada: "+metaDocument.getId());
 

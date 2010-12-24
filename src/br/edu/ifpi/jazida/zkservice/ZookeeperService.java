@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 
+import br.edu.ifpi.jazida.client.PartitionPolicy;
+import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicy;
 import br.edu.ifpi.jazida.node.DataNode;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.util.DataNodeConf;
@@ -23,22 +25,31 @@ import br.edu.ifpi.jazida.util.ZkConf;
 public class ZookeeperService extends ConnectionWatcher {
 
 	private static final Logger LOG = Logger.getLogger(ZookeeperService.class);
+	private PartitionPolicy<NodeStatus> partitionPolicy;
+
+	public ZookeeperService() {
+		this(new RoundRobinPartitionPolicy());
+	}
+	
+	public ZookeeperService(ZooKeeper zk) {
+		super(zk);
+	}
 
 	/**
 	 * Construtor padrão. Conecta-se aos servidores do Zookeeper listados em
 	 * {@link ZkConf}.ZOOKEEPER_SERVERS.
 	 */
-	public ZookeeperService() {
+	public ZookeeperService(PartitionPolicy<NodeStatus> partitionPolicy) {
 		try {
 			super.connect(ZkConf.ZOOKEEPER_SERVERS);
+			List<NodeStatus> nodes = getDataNodes();
+			this.partitionPolicy = partitionPolicy;
+			this.partitionPolicy.addNode(nodes.toArray(new NodeStatus[nodes.size()]));
 		} catch (Exception e) {
 			LOG.error(e);
 		}
 	}
 
-	public ZookeeperService(ZooKeeper zk) {
-		super.zk = zk;
-	}
 
 	/**
 	 * Lista os {@link DataNode}s conectados no momento ao ZookeeperService.
@@ -72,6 +83,10 @@ public class ZookeeperService extends ConnectionWatcher {
 			}
 		}
 		return datanodes;
+	}
+	
+	public NodeStatus nextNode() {
+		return partitionPolicy.nextNode();
 	}
 
 }
