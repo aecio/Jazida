@@ -2,7 +2,6 @@ package br.edu.ifpi.jazida.node;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
@@ -55,13 +54,13 @@ public class DataNode extends ConnectionWatcher {
 	public void start() throws UnknownHostException, IOException,
 	InterruptedException, KeeperException {
 		
-		this.start(	InetAddress.getLocalHost().getHostName(), 
-				InetAddress.getLocalHost().getHostAddress(),
-				DataNodeConf.TEXT_INDEXER_SERVER_PORT,
-				DataNodeConf.TEXT_SEARCH_SERVER_PORT,
-				DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
-				DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
-				true);
+		this.start(	DataNodeConf.DATANODE_HOSTNAME, 
+					DataNodeConf.DATANODE_HOSTADDRESS,
+					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
+					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
+					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
+					DataNodeConf.IMAGE_SEARCH_SERVER_PORT,
+					true);
 	}
 
 	/**
@@ -77,8 +76,8 @@ public class DataNode extends ConnectionWatcher {
 	public void start(boolean lock) throws UnknownHostException, IOException,
 											InterruptedException, KeeperException {
 
-		this.start(	InetAddress.getLocalHost().getHostName(), 
-					InetAddress.getLocalHost().getHostAddress(),
+		this.start(	DataNodeConf.DATANODE_HOSTNAME, 
+					DataNodeConf.DATANODE_HOSTADDRESS,
 					DataNodeConf.TEXT_INDEXER_SERVER_PORT,
 					DataNodeConf.TEXT_SEARCH_SERVER_PORT,
 					DataNodeConf.IMAGE_INDEXER_SERVER_PORT,
@@ -161,22 +160,23 @@ public class DataNode extends ConnectionWatcher {
 	private void registerOnZookepper(String hostName, NodeStatus node)
 			throws KeeperException, InterruptedException, IOException {
 		
-		if (zk.exists(DataNodeConf.DATANODES_PATH, false) == null) {
+		if (zk.exists(ZkConf.DATANODES_PATH, false) == null) {
 			
-			zk.create(	DataNodeConf.DATANODES_PATH, 
+			zk.create(	ZkConf.DATANODES_PATH, 
 						null, 
 						Ids.OPEN_ACL_UNSAFE,
 						CreateMode.PERSISTENT);
 			
 		}
 
-		String path = DataNodeConf.DATANODES_PATH + "/" + hostName;
+		String path = ZkConf.DATANODES_PATH + "/" + hostName;
 		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 
 		LOG.info("Conectado ao grupo: " + createdPath);
 	}
 
 	private void createIndexIfNotExists(File indexPath) throws CorruptIndexException, LockObtainFailedException, IOException {
+		
 		IndexWriter indexWriter = new IndexWriter(	FSDirectory.open(indexPath),
 													new BrazilianAnalyzer(Version.LUCENE_30),
 													IndexWriter.MaxFieldLength.UNLIMITED);
