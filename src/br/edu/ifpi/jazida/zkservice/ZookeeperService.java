@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.ZooDefs.Ids;
 
 import br.edu.ifpi.jazida.client.PartitionPolicy;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicy;
@@ -47,6 +49,26 @@ public class ZookeeperService extends ConnectionWatcher {
 		} catch (Exception e) {
 			LOG.error(e);
 		}
+	}
+	
+	public void registerOnZookepper(String hostName, NodeStatus node)
+	throws KeeperException, InterruptedException, IOException {
+		LOG.info("Conectando-se ao Zookeeper Service...");
+		if (zk.exists(ZkConf.DATANODES_PATH, false) == null) {
+			
+			zk.create(	ZkConf.DATANODES_PATH, 
+						null, 
+						Ids.OPEN_ACL_UNSAFE,
+						CreateMode.PERSISTENT);
+			
+		}
+		String path = ZkConf.DATANODES_PATH + "/" + hostName;
+		String createdPath = zk.create(	path,
+										Serializer.fromObject(node),
+										Ids.OPEN_ACL_UNSAFE, 
+										CreateMode.EPHEMERAL);
+		
+		LOG.info("Conectado ao grupo: " + createdPath);
 	}
 
 

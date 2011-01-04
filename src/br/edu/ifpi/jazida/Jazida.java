@@ -1,14 +1,15 @@
 package br.edu.ifpi.jazida;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.BasicConfigurator;
 
 import br.edu.ifpi.jazida.client.TextSearcherClient;
 import br.edu.ifpi.jazida.node.DataNode;
 import br.edu.ifpi.opala.searching.ResultItem;
 import br.edu.ifpi.opala.searching.SearchResult;
+import br.edu.ifpi.opala.utils.Metadata;
 import br.edu.ifpi.opala.utils.QueryMapBuilder;
 /**
  * Realiza interações com um cluster Jazida através da linha de comando.
@@ -18,8 +19,8 @@ import br.edu.ifpi.opala.utils.QueryMapBuilder;
  */
 public class Jazida {
 	
+	
 	public static void main(String[] args) throws Exception {
-		BasicConfigurator.configure(null);
 		if(args[0] == null) {
 			System.out.println("Informe um dos metodos a ser invocado: startNode, search");
 		}
@@ -37,16 +38,6 @@ public class Jazida {
 
 	private static void startDataNode(String[] args) {
 		final DataNode datanode = new DataNode();
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					datanode.stop();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}));
 		try {
 			if(args.length == 1) {
 				datanode.start();
@@ -76,17 +67,24 @@ public class Jazida {
 												.title(string)
 												.content(string)
 												.build();
-		SearchResult result = searcher.search(fields, null, 1, 10, null);
+		List<String> returnedFields = new ArrayList<String>();
+		returnedFields.add(Metadata.TITLE.getValue());
+		
+		long inicio = System.currentTimeMillis();
+		SearchResult result = searcher.search(fields, returnedFields, 1, 10, null);
+		long fim = System.currentTimeMillis();
+		
 		if(result.getItems().size() > 0) {
 			System.out.println("Documentos encontrados:");
 			int i=0;
 			for (ResultItem hit : result.getItems()) {
 				i++;
-				System.out.println(i+" - "+hit.getId());
+				System.out.println(hit.getScore()+" - ID: "+hit.getId() + " - TITULO: "+hit.getField(Metadata.TITLE.getValue()));
 			}
 		}else {
 			System.out.println("Nenhum documento encontrado.");
 		}
+		System.out.println("Busca executada em "+(fim-inicio)+" ms.");
 		searcher.close();
 		System.exit(1);
 	}

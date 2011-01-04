@@ -1,7 +1,6 @@
 package br.edu.ifpi.jazida.client;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,9 +145,8 @@ public class TextSearcherClient implements TextSearcher {
 	private Sort createSort(String sortOn, boolean reverse)
 	throws CorruptIndexException, IOException {
 		Sort sort = null;
-		SortField sf = null;
 		if (sortOn != null && !sortOn.equals("")){
-			sf = new SortField(sortOn, SortField.STRING, reverse);
+			SortField sf = new SortField(sortOn, SortField.STRING, reverse);
 			sort = new Sort(sf);
 		}
 		return sort;
@@ -163,13 +161,7 @@ public class TextSearcherClient implements TextSearcher {
 			queryString.append(entry.getValue());
 			queryString.append("\" ");
 		}
-		String strQuery = null;
-		try {
-			strQuery = new String(queryString.toString().getBytes(),"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.warn(e.getStackTrace());
-		}
-		return queryParser.parse(strQuery);
+		return queryParser.parse(queryString.toString());
 	}
 	
 	private SearchResult createResultItens( int init, 
@@ -180,19 +172,22 @@ public class TextSearcherClient implements TextSearcher {
 		
 		for (int i = init; i < hits.length; i++) {
 			
+			Document document = searcher.doc(hits[i].doc);
+
 			ResultItem resultItem = new ResultItem();
-			resultItem.setId(searcher.doc(hits[i].doc).get(Metadata.ID.getValue()));
+			resultItem.setId(document.get(Metadata.ID.getValue()));
 			resultItem.setScore(Float.toString(hits[i].score));
 			
-			if (i > 0 && resultItem.getScore().equals(Float.toString(hits[i-1].score))) {
+			if (i > 0 && hits[i].score == hits[i-1].score) {
 				resultItem.setDuplicated(true);
 			}
 
 			Map<String, String> docFields = new HashMap<String, String>();
 			if (returnedFields != null) {
-				for (String returnedField : returnedFields) {
-					if (searcher.doc(hits[i].doc).get(returnedField) != null) {
-						docFields.put(returnedField, searcher.doc(hits[i].doc).get(returnedField));
+				for (String field : returnedFields) {
+					String fieldValue = document.get(field);
+					if (fieldValue != null) {
+						docFields.put(field, fieldValue);
 					}
 				}
 			}

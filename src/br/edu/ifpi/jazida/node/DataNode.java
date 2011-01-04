@@ -3,6 +3,7 @@ package br.edu.ifpi.jazida.node;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.br.BrazilianAnalyzer;
@@ -12,18 +13,14 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.util.Version;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs.Ids;
 
 import br.edu.ifpi.jazida.node.protocol.ImageIndexerProtocol;
 import br.edu.ifpi.jazida.node.protocol.ImageSearcherProtocol;
 import br.edu.ifpi.jazida.node.protocol.TextIndexerProtocol;
 import br.edu.ifpi.jazida.node.protocol.TextSearchableProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
-import br.edu.ifpi.jazida.util.Serializer;
-import br.edu.ifpi.jazida.util.ZkConf;
-import br.edu.ifpi.jazida.zkservice.ConnectionWatcher;
+import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.utils.Path;
 
 /**
@@ -34,14 +31,15 @@ import br.edu.ifpi.opala.utils.Path;
  * @author Aécio Santos
  * 
  */
-public class DataNode extends ConnectionWatcher {
+public class DataNode {
 
 	private static final Logger LOG = Logger.getLogger(DataNode.class);
-
 	private RPCServer textIndexerServer;
 	private RPCServer textSearchableServer;
 	private RPCServer imageIndexerServer;
 	private RPCServer imageSearcherServer;
+	private ZookeeperService zkService;
+	private CountDownLatch connectedSignal = new CountDownLatch(1);
 	
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
@@ -111,19 +109,12 @@ public class DataNode extends ConnectionWatcher {
 						boolean lock) 
 	throws IOException, InterruptedException, KeeperException {
 
-		LOG.info("-------------------------------------");
-		LOG.info("Conectando-se ao Zookeeper Service...");
-
-		super.connect(ZkConf.ZOOKEEPER_SERVERS);
-
 		NodeStatus node = new NodeStatus(hostName, hostAddress, 
 										textIndexerServerPort,
 										textSearchServerPort,
 										imageIndexerServerPort,
 										imageSearchServerPort);
-
-		registerOnZookepper(hostName, node);
-
+		
 		LOG.info("Iniciando o protocolo de RPC ImageIndexerServer");
 		File imageIndexPath = new File(Path.IMAGE_INDEX.getValue());
 		createIndexIfNotExists(imageIndexPath);
@@ -154,25 +145,24 @@ public class DataNode extends ConnectionWatcher {
 		textSearchableServer = new RPCServer(new TextSearchableProtocol(searcher),
 												node.getAddress(),
 												node.getTextSearchServerPort());
-		textSearchableServer.start(lock);		
-	}
-
-	private void registerOnZookepper(String hostName, NodeStatus node)
-			throws KeeperException, InterruptedException, IOException {
+		textSearchableServer.start(false);
 		
-		if (zk.exists(ZkConf.DATANODES_PATH, false) == null) {
-			
-			zk.create(	ZkConf.DATANODES_PATH, 
-						null, 
-						Ids.OPEN_ACL_UNSAFE,
-						CreateMode.PERSISTENT);
-			
-		}
-
-		String path = ZkConf.DATANODES_PATH + "/" + hostName;
-		String createdPath = zk.create(path, Serializer.fromObject(node), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
-
-		LOG.info("Conectado ao grupo: " + createdPath);
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					stop();
+				} catch (InterruptedException e) {
+					LOG.error(e);
+				}
+			}
+		}));
+		
+		zkService = new ZookeeperService(); 
+		zkService.registerOnZookepper(hostName, node);
+		
+		if(lock) connectedSignal.await();
+		
 	}
 
 	private void createIndexIfNotExists(File indexPath) throws CorruptIndexException, LockObtainFailedException, IOException {
@@ -184,10 +174,11 @@ public class DataNode extends ConnectionWatcher {
 	}
 	
 	public void stop() throws InterruptedException {
+		connectedSignal.countDown();
 		textIndexerServer.stop();
 		textSearchableServer.stop();
 		imageIndexerServer.stop();
 		imageSearcherServer.stop();
-		super.disconnect();
+		zkService.disconnect();
 	}
 }
