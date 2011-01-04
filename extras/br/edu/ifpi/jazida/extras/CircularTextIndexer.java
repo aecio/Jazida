@@ -21,8 +21,8 @@ class CircularTextIndexer {
 
 
 	static String[] servers = { "monica-desktop", "monica-desktop",
-							"mario-desktop", "mario-desktop",
-							"luigi-desktop", "luigi-desktop"};
+								"mario-desktop", "mario-desktop",
+								"luigi-desktop", "luigi-desktop"};
 	static Thread[] threads;
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
