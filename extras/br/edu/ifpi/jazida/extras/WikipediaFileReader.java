@@ -15,6 +15,7 @@ class WikipediaFileReader {
 	private BufferedReader reader;
 	private int lineNumber = 0;
 	private int maxLines;
+	private int hash = this.hashCode();
 	
 	public WikipediaFileReader(File file) throws IOException {
 		this(file, Integer.MAX_VALUE);
@@ -25,6 +26,10 @@ class WikipediaFileReader {
 		this.maxLines = maxLines;
 	}
 	
+	public void close() throws IOException {
+		reader.close();
+	}
+	
 	public WikiDocument nextDocument() throws IOException {
 		String line;
 		WikiDocument doc = null;
@@ -32,11 +37,12 @@ class WikipediaFileReader {
 			int id;
 			synchronized(reader) {
 				line = reader.readLine();
+				if(line == null || lineNumber > maxLines) {
+					return null;
+				}
 				lineNumber++;
-				id = lineNumber;
+				id = hash +lineNumber;
 			}
-			if(line == null || lineNumber > maxLines)
-				return null;
 			
 			doc = parseWikiDocument(id, line);
 		}

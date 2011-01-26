@@ -18,7 +18,7 @@ public class RoundRobinPartitionPolicy implements PartitionPolicy<NodeStatus> {
 	private int currentNode = 0;
 
 	@Override
-	public NodeStatus nextNode() {
+	public synchronized NodeStatus nextNode() {
 		NodeStatus node = nodes.get(currentNode);
 		currentNode++;
 		if (currentNode >= nodes.size()) {

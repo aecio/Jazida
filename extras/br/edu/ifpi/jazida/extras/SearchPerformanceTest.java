@@ -25,33 +25,38 @@ public class SearchPerformanceTest {
 	private static final String QUERIES_FILE_PATH = "./sample-data/queries.txt";
 	
 
-	private static int THREADS = 200;
-	private static int MAX_QUERIES = 5000;
+	private TextSearcherClient searcher;
 //	private static int MAX_QUERIES = 22064; //Quantidade de linhas do arquivo queries.txt
 	
 	public static void main(String[] args) throws Exception {
 		if(args.length > 0) {
 			try {
-				MAX_QUERIES = Integer.parseInt(args[0]);
-			}catch (NumberFormatException e) {
-				System.out.println("O parâmetro deve ser um inteiro indicando " +
-						"a quantidade máxima de Queries a serem executadas.");
+				new SearchPerformanceTest().start(Integer.parseInt(args[0]), 300);
 			}
+			catch (NumberFormatException e) {
+				System.out.println("O parâmetro deve ser um inteiro indicando a " +
+								"quantidade máxima de Queries a serem executadas.");
+			}
+		}else {
+			new SearchPerformanceTest().start(300, 20000);
+			
 		}
-		new SearchPerformanceTest().start();
+		
 		System.exit(1);
 	}
+	
+	public SearchPerformanceTest() throws Exception  {
+		searcher = new TextSearcherClient();
+	}
 
-	private void start() throws InterruptedException, ExecutionException, IOException, KeeperException {
+	public long start(int maxQueries, int threads) throws InterruptedException, ExecutionException, IOException, KeeperException {
 		
-		QueryFileReader reader = new QueryFileReader(new File(QUERIES_FILE_PATH), MAX_QUERIES);
-		TextSearcherClient searcher = new TextSearcherClient();
-		
-		ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+		QueryFileReader reader = new QueryFileReader(new File(QUERIES_FILE_PATH), maxQueries);
+		ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
 		long inicio = System.currentTimeMillis();
-		for(int i=0;i<THREADS;i++) {
+		for(int i=0;i<threads;i++) {
 			Future<Integer> future = executor.submit(new QueriesRunner(searcher, reader));
 			futures.add(future);
 		}
@@ -59,7 +64,7 @@ public class SearchPerformanceTest {
 		for(Future<Integer> result: futures) {
 			totalQueries += result.get();
 		}
-		float tempoTotal = System.currentTimeMillis() - inicio;
+		long tempoTotal = System.currentTimeMillis() - inicio;
 		
 		System.out.println("Tempo de execução: "+tempoTotal+" ms");
 		System.out.println("Queries executadas: "+totalQueries);
@@ -67,6 +72,8 @@ public class SearchPerformanceTest {
 		System.out.println("Tempo médio por Query: "+ (tempoTotal/totalQueries)+" ms");
 		
 		searcher.close();
+		
+		return tempoTotal;
 	}
 		
 	private class QueriesRunner implements Callable<Integer> {
