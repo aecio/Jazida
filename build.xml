@@ -69,7 +69,7 @@
 		<echo>Arquivo ${dir.bin}/${jar.name} criado com sucesso.</echo>
 	</target>
 
-	<!-- Executa os testes do Opala -->
+	<!-- Executa os testes do Jazida -->
 	<target name="test" depends="compile, compile-test">
 		<echo>Executando suite de testes do Jazida...</echo>
 		<junit haltonfailure="false" haltonerror="false" showoutput="no" fork="true" dir="${dir.base}">

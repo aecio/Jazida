@@ -31,9 +31,8 @@ public class IndexerHolder {
 		public synchronized WikipediaFileReader getFileReader() {
 			if (wikiFile == null) {
 				try {
-					wikiFile = new WikipediaFileReader(
-							new File("/home/aecio/workspace/lapesi/jazida/sample-data/wikipedia.lines.txt"),
-							10000);
+					String pathname = "/home/aecio/workspace/lapesi/jazida/sample-data/wikipedia.lines.txt";
+					wikiFile = new WikipediaFileReader(new File(pathname));
 				} catch (IOException e) {
 					e.printStackTrace();
 					wikiFile = null;

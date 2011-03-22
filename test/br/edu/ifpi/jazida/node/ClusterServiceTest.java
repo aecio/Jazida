@@ -12,11 +12,11 @@ import java.util.List;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 
-public class ZookeeperServiceTest {
+public class ClusterServiceTest {
 
 	@Test
 	public void deveriaRetornarOsDataNodesConectadosAoZookeeper() throws Exception {
@@ -27,7 +27,7 @@ public class ZookeeperServiceTest {
 		when(zk.getChildren(ZkConf.DATANODES_PATH, false)).thenReturn(Arrays.asList("host1"));
 		when(zk.getData(ZkConf.DATANODES_PATH + "/"+ "host1", false, null)).thenReturn(Serializer.fromObject(dataNode1));
 		
-		ZookeeperService zkService = new ZookeeperService(zk);
+		ClusterService zkService = new ClusterService(zk);
 		
 		//Quando
 		List<NodeStatus> dataNodes = zkService.getDataNodes();

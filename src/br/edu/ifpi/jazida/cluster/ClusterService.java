@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.zkservice;
+package br.edu.ifpi.jazida.cluster;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,16 +23,16 @@ import br.edu.ifpi.jazida.util.ZkConf;
  * @author Aécio Solano Rodrigues Santos
  * 
  */
-public class ZookeeperService extends ConnectionWatcher {
+public class ClusterService extends ConnectionWatcher {
 
-	private static final Logger LOG = Logger.getLogger(ZookeeperService.class);
+	private static final Logger LOG = Logger.getLogger(ClusterService.class);
 	private PartitionPolicy<NodeStatus> partitionPolicy;
 
-	public ZookeeperService() {
+	public ClusterService() {
 		this(new RoundRobinPartitionPolicy());
 	}
 	
-	public ZookeeperService(ZooKeeper zk) {
+	public ClusterService(ZooKeeper zk) {
 		super(zk);
 	}
 
@@ -40,7 +40,7 @@ public class ZookeeperService extends ConnectionWatcher {
 	 * Construtor padrão. Conecta-se aos servidores do Zookeeper listados em
 	 * {@link ZkConf}.ZOOKEEPER_SERVERS.
 	 */
-	public ZookeeperService(PartitionPolicy<NodeStatus> partitionPolicy) {
+	public ClusterService(PartitionPolicy<NodeStatus> partitionPolicy) {
 		try {
 			super.connect(ZkConf.ZOOKEEPER_SERVERS);
 			List<NodeStatus> nodes = getDataNodes();

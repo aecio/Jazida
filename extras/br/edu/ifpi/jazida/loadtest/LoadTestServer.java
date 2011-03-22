@@ -68,8 +68,6 @@ public class LoadTestServer implements LoadTestProtocol {
 	public LongWritable executeIndexingLoadTest(Text fileName,
 												IntWritable totalDocuments,
 												IntWritable totalThreads) {
-		System.out.println("LoadTestServer.executeIndexingLoadTest()");
-
 		LongWritable tempo = null;
 		try {
 			tempo = new LongWritable(indexingTest.start(new File(fileName.toString()), 

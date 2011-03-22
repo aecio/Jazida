@@ -4,12 +4,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import br.edu.ifpi.jazida.client.ImageIndexerClientTest;
-import br.edu.ifpi.jazida.client.ImageSearchClientTest;
+import br.edu.ifpi.jazida.client.ImageSearcherClientTest;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicyTest;
 import br.edu.ifpi.jazida.client.TextIndexerClientTest;
-import br.edu.ifpi.jazida.client.TextSearchClientTest;
+import br.edu.ifpi.jazida.client.TextSearcherClientTest;
+import br.edu.ifpi.jazida.node.ClusterServiceTest;
 import br.edu.ifpi.jazida.node.NodeStatusTest;
-import br.edu.ifpi.jazida.node.ZookeeperServiceTest;
 import br.edu.ifpi.jazida.util.JazidaConfTest;
 import br.edu.ifpi.jazida.writable.WritableUtilsTest;
 
@@ -18,13 +18,13 @@ import br.edu.ifpi.jazida.writable.WritableUtilsTest;
 @Suite.SuiteClasses({
 	RoundRobinPartitionPolicyTest.class,
 	NodeStatusTest.class,
-	ZookeeperServiceTest.class,
+	ClusterServiceTest.class,
 	JazidaConfTest.class,
 	WritableUtilsTest.class,
 	TextIndexerClientTest.class,
-	TextSearchClientTest.class,
+	TextSearcherClientTest.class,
 	ImageIndexerClientTest.class,
-	ImageSearchClientTest.class
+	ImageSearcherClientTest.class
 })
 
 /**

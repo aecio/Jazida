@@ -9,18 +9,19 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.br.BrazilianAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.util.Version;
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.node.protocol.ImageIndexerProtocol;
 import br.edu.ifpi.jazida.node.protocol.ImageSearcherProtocol;
 import br.edu.ifpi.jazida.node.protocol.TextIndexerProtocol;
 import br.edu.ifpi.jazida.node.protocol.TextSearchableProtocol;
 import br.edu.ifpi.jazida.util.DataNodeConf;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
+import br.edu.ifpi.opala.indexing.NearRealTimeTextIndexer;
+import br.edu.ifpi.opala.utils.IndexManager;
 import br.edu.ifpi.opala.utils.Path;
 
 /**
@@ -38,8 +39,9 @@ public class DataNode {
 	private RPCServer textSearchableServer;
 	private RPCServer imageIndexerServer;
 	private RPCServer imageSearcherServer;
-	private ZookeeperService zkService;
+	private ClusterService zkService;
 	private CountDownLatch connectedSignal = new CountDownLatch(1);
+	private IndexManager indexManager;
 	
 	/**
 	 * Inicia um {@link DataNode} com configurações do host local.
@@ -131,18 +133,17 @@ public class DataNode {
 		imageSearcherServer.start(false);
 		
 
+		FSDirectory directory = FSDirectory.open(new File(Path.TEXT_INDEX.getValue()));
+		indexManager = new IndexManager(directory);
+		
 		LOG.info("Iniciando o protocolo de RPC TextIndexerServer");
-		textIndexerServer = new RPCServer(	new TextIndexerProtocol(),
+		textIndexerServer = new RPCServer(	new TextIndexerProtocol(new NearRealTimeTextIndexer(indexManager)),
 											node.getAddress(),
 											node.getTextIndexerServerPort());
 		textIndexerServer.start(false);
 
 		LOG.info("Iniciando o protocolo de RPC TextSearchableServer");
-		File textIndexPath = new File(Path.TEXT_INDEX.getValue());
-		createIndexIfNotExists(textIndexPath);
-		FSDirectory dir = FSDirectory.open(textIndexPath);
-		IndexSearcher searcher = new IndexSearcher(dir, true);
-		textSearchableServer = new RPCServer(new TextSearchableProtocol(searcher),
+		textSearchableServer = new RPCServer(new TextSearchableProtocol(indexManager),
 												node.getAddress(),
 												node.getTextSearchServerPort());
 		textSearchableServer.start(false);
@@ -158,7 +159,7 @@ public class DataNode {
 			}
 		}));
 		
-		zkService = new ZookeeperService(); 
+		zkService = new ClusterService(); 
 		zkService.registerOnZookepper(hostName, node);
 		
 		if(lock) connectedSignal.await();
@@ -181,5 +182,11 @@ public class DataNode {
 		imageIndexerServer.stop();
 		imageSearcherServer.stop();
 		zkService.disconnect();
+		try {
+			indexManager.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Execução de DataNode finalizada!");
 	}
 }
