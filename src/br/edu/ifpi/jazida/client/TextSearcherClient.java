@@ -51,6 +51,7 @@ import br.edu.ifpi.opala.utils.ReturnMessage;
 
 public class TextSearcherClient implements TextSearcher {
 	
+	private static final BrazilianAnalyzer ANALYZER = new BrazilianAnalyzer(Version.LUCENE_30);
 	private static final Logger LOG = Logger.getLogger(TextSearcherClient.class);
 	private static final Configuration HADOOP_CONF = new Configuration();
 	private ParallelMultiSearcher searcher;
@@ -142,8 +143,7 @@ public class TextSearcherClient implements TextSearcher {
 	}
 	
 
-	private Sort createSort(String sortOn, boolean reverse)
-	throws CorruptIndexException, IOException {
+	private Sort createSort(String sortOn, boolean reverse) {
 		Sort sort = null;
 		if (sortOn != null && !sortOn.equals("")){
 			SortField sf = new SortField(sortOn, SortField.STRING, reverse);
@@ -153,7 +153,7 @@ public class TextSearcherClient implements TextSearcher {
 	}
 	
 	private Query createQuery(Map<String, String> fields) throws ParseException {
-		QueryParser queryParser = new QueryParser(Version.LUCENE_30, null, new BrazilianAnalyzer(Version.LUCENE_30));
+		QueryParser queryParser = new QueryParser(Version.LUCENE_30, null, ANALYZER);
 		StringBuffer queryString = new StringBuffer();
 		for (Map.Entry<String, String> entry : fields.entrySet()) {
 			queryString.append(entry.getKey());
