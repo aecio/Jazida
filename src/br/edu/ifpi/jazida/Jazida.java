@@ -49,11 +49,9 @@ public class Jazida {
 		}));
 		try {
 			if(args.length == 1) {
-				System.out.println("\n\nsimples...\n\n");
 				datanode.start();
 			}else {
 				try {
-					System.out.println("\n\navancado...\n\n");
 					datanode.start(	args[1],
 								InetAddress.getLocalHost().getHostAddress(),
 								Integer.parseInt(args[2]),
@@ -76,7 +74,6 @@ public class Jazida {
 												.id(string)
 												.author(string)
 												.title(string)
-												.keywords(string)
 												.content(string)
 												.build();
 		SearchResult result = searcher.search(fields, null, 1, 10, null);

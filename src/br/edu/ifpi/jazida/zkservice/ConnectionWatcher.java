@@ -22,6 +22,13 @@ public class ConnectionWatcher implements Watcher {
 	private static final Logger LOG = Logger.getLogger(ConnectionWatcher.class);
 	protected ZooKeeper zk;
 	private CountDownLatch connectedSignal = new CountDownLatch(1);
+	
+	public ConnectionWatcher() {
+	}
+	
+	public ConnectionWatcher(ZooKeeper zk) {
+		this.zk = zk;
+	}
 
 	protected void connect(String hosts) throws IOException, InterruptedException {
 		LOG.info("\n-----------------------------------");
