@@ -24,6 +24,7 @@ public class SearchPerformanceTest {
 
 	private static final File QUERIES_FILE = new File("./sample-data/queries.txt");
 	private static int MAX_QUERIES = 1000;
+
 //	private static int MAX_QUERIES = 22064; //Quantidade de linhas do arquivo queries.txt
 	private static int THREADS = 100;
 
@@ -41,7 +42,6 @@ public class SearchPerformanceTest {
 			}
 		}else {
 			new SearchPerformanceTest().start(MAX_QUERIES, THREADS);
-			
 		}
 		
 		System.exit(1);
