@@ -187,6 +187,6 @@ public class DataNode {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Execução de DataNode finalizada!");
+		LOG.info("Execução de DataNode finalizada!");
 	}
 }
