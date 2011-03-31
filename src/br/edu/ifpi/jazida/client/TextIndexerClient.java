@@ -51,6 +51,7 @@ public class TextIndexerClient implements TextIndexer {
 
 	public TextIndexerClient() throws KeeperException, InterruptedException, IOException {
 		zkService = new ClusterService(new RoundRobinPartitionPolicy());
+
 		List<NodeStatus> datanodes = zkService.getDataNodes();
 		if (datanodes.size()==0) 
 			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ClusterService.");
