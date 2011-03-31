@@ -165,7 +165,8 @@ public class DataNode {
 		
 	}
 
-	private void createIndexIfNotExists(File indexPath) throws CorruptIndexException, LockObtainFailedException, IOException {
+	private void createIndexIfNotExists(File indexPath)
+	throws CorruptIndexException, LockObtainFailedException, IOException {
 		
 		IndexWriter indexWriter = new IndexWriter(	FSDirectory.open(indexPath),
 													new BrazilianAnalyzer(Version.LUCENE_30),
