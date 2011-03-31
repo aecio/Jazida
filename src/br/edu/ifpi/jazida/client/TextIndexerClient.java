@@ -34,6 +34,7 @@ import br.edu.ifpi.opala.indexing.TextIndexer;
 import br.edu.ifpi.opala.utils.MetaDocument;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
+
 /**
  * Interface para usuário do Jazida. Aplicações devem utilizar essa classe para
  * comunicação com um cluster Jazida.
