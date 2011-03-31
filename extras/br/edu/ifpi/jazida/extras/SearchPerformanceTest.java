@@ -28,7 +28,6 @@ public class SearchPerformanceTest {
 	private static int THREADS = 100;
 
 	private TextSearcherClient searcher;
-
 	
 	public static void main(String[] args) throws Exception {
 		if(args.length > 0) {
