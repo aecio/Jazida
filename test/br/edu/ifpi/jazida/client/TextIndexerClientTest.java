@@ -150,7 +150,6 @@ public class TextIndexerClientTest {
 //				is(tituloAtualizado));
 //	}
 
-
 //	private String theFirstTitleOfSearchResult(SearchResult beforeUpdate) {
 //		return beforeUpdate.getItem(0).getField(Metadata.TITLE.getValue());
 //	}
