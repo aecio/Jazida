@@ -80,10 +80,11 @@ public class TextIndexerClient extends ConnectionWatcher implements TextIndexer 
 		MetaDocumentWritable documentWrap = new MetaDocumentWritable(metaDocument);
 		NodeStatus node = zkService.nextNode();
 
-		LOG.info(node.getHostname()+": documento indexado: "+metaDocument.getId());
-
 		ITextIndexerProtocol proxy = proxyMap.get(node.getHostname());
 		IntWritable result = proxy.addText(documentWrap, new Text(content));
+		
+		LOG.info("Indexação de "+metaDocument.getId()+" em "+node.getHostname()
+					+" retornou "+ReturnMessage.getReturnMessage(result.get()));
 		
 		return ReturnMessage.getReturnMessage(result.get());
 	}
