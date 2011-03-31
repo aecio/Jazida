@@ -12,7 +12,6 @@ import br.edu.ifpi.jazida.client.PartitionPolicy;
 import br.edu.ifpi.jazida.client.RoundRobinPartitionPolicy;
 import br.edu.ifpi.jazida.node.DataNode;
 import br.edu.ifpi.jazida.node.NodeStatus;
-import br.edu.ifpi.jazida.util.DataNodeConf;
 import br.edu.ifpi.jazida.util.Serializer;
 import br.edu.ifpi.jazida.util.ZkConf;
 
@@ -67,13 +66,13 @@ public class ZookeeperService extends ConnectionWatcher {
 		 * os dadanodes e remover da lista quando receber notificações de
 		 * desconexão do datanode do Zookeeper.
 		 */
-		List<String> nodesIds = zk.getChildren(DataNodeConf.DATANODES_PATH, false);
+		List<String> nodesIds = zk.getChildren(ZkConf.DATANODES_PATH, false);
 		LOG.info(nodesIds.size() + " datanode(s) ativo(s) no momento.");
 
 		List<NodeStatus> datanodes = new ArrayList<NodeStatus>();
 		for (String node : nodesIds) {
 			try {
-				byte[] bytes = zk.getData(DataNodeConf.DATANODES_PATH + "/" + node, false, null);
+				byte[] bytes = zk.getData(ZkConf.DATANODES_PATH + "/" + node, false, null);
 				NodeStatus status = (NodeStatus) Serializer.toObject(bytes);
 				LOG.info(status.getHostname());
 				datanodes.add(status);

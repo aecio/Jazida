@@ -1,16 +1,15 @@
 package br.edu.ifpi.jazida.util;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 /**
  * Centraliza as configurações do Zookeeper utilizadas no Jazida. Servidores do
- * Zookeeper devem ser configurados no arquivo /conf/zkservice. Deve haver um
- * hostname por linha.
+ * Zookeeper devem ser configurados no arquivo ${JAZIDA_HOME}/conf/jazida.zk.properties.
  * 
  * @author Aécio Solano Rodrigues Santos
  * 
@@ -18,36 +17,24 @@ import org.apache.log4j.Logger;
 public class ZkConf {
 
 	private static final Logger LOG = Logger.getLogger(ZkConf.class);
-
-	public static final String ZOOKEEPER_SERVERS;
+	
+	public static String ZOOKEEPER_SERVERS;
+	public static int ZOOKEEPER_TIMEOUT;
+	public static int ZOOKEEPER_TICKTIME;
+	public static String DATANODES_PATH;
 
 	static {
-		ZOOKEEPER_SERVERS = readZkServiceConf("./conf/zkservice");
-	}
-
-	private static String readZkServiceConf(String fileName) {
-		String zkServers = null;
 		try {
-			File arquivo = new File(fileName);
-			BufferedReader reader = new BufferedReader(new FileReader(arquivo));
-
-			StringBuffer buffer = new StringBuffer();
-			String host = null;
-			while ((host = reader.readLine()) != null) {
-				if (!host.trim().startsWith("#")) {
-					buffer.append(',');
-					buffer.append(host.trim());
-				}
-			}
-			zkServers = buffer.toString().replaceFirst(",", "");
-
+			File arquivo = new File("./conf/jazida.zk.properties");
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(arquivo));
+			ZOOKEEPER_SERVERS = properties.getProperty("zookeeper.servers");
+			ZOOKEEPER_TIMEOUT = Integer.parseInt(properties.getProperty("zookeeper.timeout"));
+			ZOOKEEPER_TICKTIME = Integer.parseInt(properties.getProperty("zookeeper.ticktime"));
+			DATANODES_PATH = properties.getProperty("zookeeper.path.datanodes");
 		} catch (IOException e) {
-			LOG.error("Falha na leitura do arquivo de configurações /conf/zkservice");
-		}
-		if (zkServers == null) {
-			return "localhost";
-		} else {
-			return zkServers;
+			LOG.error("Falha na leitura do arquivo de configurações ./conf/jazida.zk.properties");
 		}
 	}
+
 }
