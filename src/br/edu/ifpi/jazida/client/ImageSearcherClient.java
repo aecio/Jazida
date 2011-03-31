@@ -24,32 +24,32 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.protocol.IImageSearchProtocol;
 import br.edu.ifpi.jazida.writable.BufferedImageWritable;
 import br.edu.ifpi.jazida.writable.SearchResultWritable;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.searching.ResultItem;
 import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.searching.SearcherImage;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
-public class ImageSearchClient implements SearcherImage {
+public class ImageSearcherClient implements SearcherImage {
 	
 	private static final Logger LOG = Logger.getLogger(ImageIndexerClient.class);
 	private static final Configuration HADOOP_CONF = new Configuration();
-	private ZookeeperService zkService = new ZookeeperService();
+	private ClusterService zkService = new ClusterService();
 	private List<NodeStatus> datanodes;
 	private Map<String, IImageSearchProtocol> proxyMap = new HashMap<String, IImageSearchProtocol>();
 	private ExecutorService threadPool;
 
-	public ImageSearchClient() throws IOException, KeeperException, InterruptedException {
+	public ImageSearcherClient() throws IOException, KeeperException, InterruptedException {
 		LOG.info("Inicializando ImageSearchClient");
 		this.datanodes = zkService.getDataNodes();
 
 		if (datanodes.size()==0) {
-			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
+			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ClusterService.");
 		}
 
 		for (NodeStatus node : datanodes) {

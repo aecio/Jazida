@@ -33,6 +33,7 @@ import org.apache.lucene.search.Weight;
 import org.apache.lucene.util.Version;
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.protocol.ITextSearchableProtocol;
@@ -42,7 +43,6 @@ import br.edu.ifpi.jazida.writable.QueryWritable;
 import br.edu.ifpi.jazida.writable.SortWritable;
 import br.edu.ifpi.jazida.writable.TermWritable;
 import br.edu.ifpi.jazida.writable.WeightWritable;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.searching.ResultItem;
 import br.edu.ifpi.opala.searching.SearchResult;
 import br.edu.ifpi.opala.searching.TextSearcher;
@@ -57,7 +57,7 @@ public class TextSearcherClient implements TextSearcher {
 	private ParallelMultiSearcher searcher;
 	private List<NodeStatus> datanodes;
 	private Map<String, ITextSearchableProtocol> proxyMap = new HashMap<String, ITextSearchableProtocol>();
-	private ZookeeperService zkService = new ZookeeperService();
+	private ClusterService zkService = new ClusterService();
 	
 	public TextSearcherClient() 
 	throws IOException, KeeperException, InterruptedException {
@@ -65,7 +65,7 @@ public class TextSearcherClient implements TextSearcher {
 		this.datanodes = zkService.getDataNodes();
 
 		if (datanodes.size()==0) {
-			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
+			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ClusterService.");
 		}
 		Searchable[] searchables = new RemoteSearchableAdapter[datanodes.size()];
 		int i=0;

@@ -24,12 +24,12 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.protocol.ITextIndexerProtocol;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.jazida.writable.WritableUtils;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.indexing.TextIndexer;
 import br.edu.ifpi.opala.utils.MetaDocument;
 import br.edu.ifpi.opala.utils.ReturnMessage;
@@ -46,20 +46,20 @@ public class TextIndexerClient implements TextIndexer {
 	private static final Logger LOG = Logger.getLogger(TextIndexerClient.class);
 	private static Configuration HADOOP_CONFIGURATION = new Configuration();
 	private Map<String, ITextIndexerProtocol> proxyMap = new HashMap<String, ITextIndexerProtocol>();
-	private ZookeeperService zkService;
+	private ClusterService zkService;
 	private ExecutorService threadPool;
 
 	public TextIndexerClient() throws KeeperException, InterruptedException, IOException {
-		zkService = new ZookeeperService(new RoundRobinPartitionPolicy());
+		zkService = new ClusterService(new RoundRobinPartitionPolicy());
 		List<NodeStatus> datanodes = zkService.getDataNodes();
 		if (datanodes.size()==0) 
-			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");
+			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ClusterService.");
 		
 		for (NodeStatus node : datanodes) {
 			final InetSocketAddress socketAdress = new InetSocketAddress(node.getAddress(),
 																		 node.getTextIndexerServerPort());
-			ITextIndexerProtocol opalaClient = getTextIndexerServer(socketAdress);
-			proxyMap.put(node.getHostname(), opalaClient);
+			ITextIndexerProtocol textIndexerProxy = this.getTextIndexerServer(socketAdress);
+			proxyMap.put(node.getHostname(), textIndexerProxy);
 		}
 		threadPool = Executors.newCachedThreadPool();
 	}

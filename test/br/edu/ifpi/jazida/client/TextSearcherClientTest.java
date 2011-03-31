@@ -28,7 +28,7 @@ import br.edu.ifpi.opala.utils.Metadata;
 import br.edu.ifpi.opala.utils.Path;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
-public class TextSearchClientTest {
+public class TextSearcherClientTest {
 	
 	private static final String SAMPLE_DATA_FOLDER = "./sample-data/texts";
 	private static DataNode datanode;

@@ -14,16 +14,11 @@ class WikipediaFileReader {
 
 	private BufferedReader reader;
 	private int lineNumber = 0;
-	private int maxLines;
 	private int hash = this.hashCode();
+	private Object lineNumberSignal = new Object();
 	
 	public WikipediaFileReader(File file) throws IOException {
-		this(file, Integer.MAX_VALUE);
-	}
-
-	public WikipediaFileReader(File file, int maxLines) throws IOException {
 		this.reader = new BufferedReader(new FileReader(file));
-		this.maxLines = maxLines;
 	}
 	
 	public void close() throws IOException {
@@ -34,22 +29,23 @@ class WikipediaFileReader {
 		String line;
 		WikiDocument doc = null;
 		while(doc == null) {
-			int id;
 			synchronized(reader) {
 				line = reader.readLine();
-				if(line == null || lineNumber > maxLines) {
+				if(line == null) {
 					return null;
 				}
-				lineNumber++;
-				id = hash +lineNumber;
 			}
-			
+			String id;
+			synchronized (lineNumberSignal) {
+				lineNumber++;
+				id = hash +"-"+lineNumber;
+			}
 			doc = parseWikiDocument(id, line);
 		}
 		return doc;
 	}
 
-	private WikiDocument parseWikiDocument(int id, String linha) {
+	private WikiDocument parseWikiDocument(String id, String linha) {
 		try {
 			StringTokenizer tokenizer = new StringTokenizer(linha, "\t");
 			
@@ -58,7 +54,7 @@ class WikipediaFileReader {
 			String content = tokenizer.nextToken();
 			
 			MetaDocument metadoc = new MetaDocumentBuilder()
-										.id(String.valueOf(id))
+										.id(id)
 										.title(title)
 										.publicationDate(date)
 										.build();

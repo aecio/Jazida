@@ -14,11 +14,16 @@ import org.apache.lucene.store.LockObtainFailedException;
 
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
 import br.edu.ifpi.opala.indexing.TextIndexer;
-import br.edu.ifpi.opala.indexing.TextIndexerImpl;
 import br.edu.ifpi.opala.utils.MetaDocument;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 
 public class TextIndexerProtocol implements ITextIndexerProtocol {
+
+	private TextIndexer textIndexer;
+	
+	public TextIndexerProtocol(TextIndexer indexer) {
+		this.textIndexer = indexer;
+	}
 
 	@Override
 	public long getProtocolVersion(String arg0, long arg1) throws IOException {
@@ -27,40 +32,36 @@ public class TextIndexerProtocol implements ITextIndexerProtocol {
 
 	@Override
 	public IntWritable addText(MetaDocumentWritable metaDocWrapper, Text content) {
-		MetaDocument metaDocument = metaDocWrapper.getMetaDoc();
-		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl()
-							.addText(metaDocument, content.toString());
+		MetaDocument metadoc = metaDocWrapper.getMetaDoc();
+		ReturnMessage result = textIndexer.addText(metadoc, content.toString());
 		return new IntWritable(result.getCode());
 	}
 
 	@Override
 	public void backupNow() throws FileNotFoundException, IOException {
-		TextIndexerImpl.getTextIndexerImpl().backupNow();
+		textIndexer.backupNow();
 	}
 
 	@Override
 	public IntWritable delText(Text identifier) {
-		TextIndexer indexer = TextIndexerImpl.getTextIndexerImpl();
-		ReturnMessage result = indexer.delText(identifier.toString());
+		ReturnMessage result = textIndexer.delText(identifier.toString());
 		return new IntWritable(result.getCode());
 	}
 
 	@Override
-	public void optimize() throws CorruptIndexException,
-			LockObtainFailedException, IOException {
-		TextIndexerImpl.getTextIndexerImpl().optimize();
+	public void optimize() throws CorruptIndexException, LockObtainFailedException, IOException {
+		textIndexer.optimize();
 	}
 
 	@Override
 	public void restoreBackup() {
-		TextIndexerImpl.getTextIndexerImpl().restoreBackup();
-
+		textIndexer.restoreBackup();
 	}
 
 	@Override
 	public IntWritable updateText(Text id, MapWritable updatesWritable) {
 		Map<String, String> updates = convertMapWritableToMap(updatesWritable);
-		ReturnMessage result = TextIndexerImpl.getTextIndexerImpl().updateText(id.toString(), updates);
+		ReturnMessage result = textIndexer.updateText(id.toString(), updates);
 		return new IntWritable(result.getCode());
 	}
 }

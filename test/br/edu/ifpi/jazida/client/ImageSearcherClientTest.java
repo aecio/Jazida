@@ -29,7 +29,7 @@ import br.edu.ifpi.opala.utils.Path;
 import br.edu.ifpi.opala.utils.ReturnMessage;
 import br.edu.ifpi.opala.utils.Util;
 
-public class ImageSearchClientTest {
+public class ImageSearcherClientTest {
 	
 	public static final File IMAGE_01 = new File("./sample-data/images/image01.bmp");
 	public static final File IMAGE_02 = new File("./sample-data/images/image02.bmp");
@@ -59,7 +59,7 @@ public class ImageSearchClientTest {
 		//dado
 		dadoQueImagem03FoiIndexada();
 		dadoQueImagem03DuplicadaFoiIndexada();
-		SearcherImage searcher = new ImageSearchClient();
+		SearcherImage searcher = new ImageSearcherClient();
 		//quando
 		SearchResult searchResult = searcher.search(ImageIO.read(IMAGE_03), 10);
 
@@ -81,7 +81,7 @@ public class ImageSearchClientTest {
 	@Test
 	public void deveriaEncontrarImagemIndexaEDevolverSuccesss() throws IOException, KeeperException, InterruptedException {
 		//dado
-		SearcherImage searcher = new ImageSearchClient();
+		SearcherImage searcher = new ImageSearcherClient();
 		dadoQueImagem01FoiIndexada();
 		
 		//quando
@@ -95,7 +95,7 @@ public class ImageSearchClientTest {
 	@Test
 	public void deveriaDevolverParameterInvalidQuandoImagemEhNula() throws IOException, KeeperException, InterruptedException {
 		//dado
-		SearcherImage searcher = new ImageSearchClient();
+		SearcherImage searcher = new ImageSearcherClient();
 		
 		//quando
 		SearchResult searchResult= searcher.search(null, 10);
@@ -112,7 +112,7 @@ public class ImageSearchClientTest {
 		dadoQueImagem03FoiIndexada();
 		dadoQueImagem03DuplicadaFoiIndexada();
 		
-		SearcherImage searcher = new ImageSearchClient();
+		SearcherImage searcher = new ImageSearcherClient();
 		
 		//quando
 		SearchResult searchResult= searcher.search(ImageIO.read(IMAGE_03), 2);

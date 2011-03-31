@@ -22,23 +22,26 @@ import br.edu.ifpi.opala.utils.QueryMapBuilder;
 
 public class SearchPerformanceTest {
 
-	private static final String QUERIES_FILE_PATH = "./sample-data/queries.txt";
-	
+	private static final File QUERIES_FILE = new File("./sample-data/queries.txt");
+	private static int MAX_QUERIES = 1000;
+//	private static int MAX_QUERIES = 22064; //Quantidade de linhas do arquivo queries.txt
+	private static int THREADS = 100;
 
 	private TextSearcherClient searcher;
-//	private static int MAX_QUERIES = 22064; //Quantidade de linhas do arquivo queries.txt
+
 	
 	public static void main(String[] args) throws Exception {
 		if(args.length > 0) {
 			try {
-				new SearchPerformanceTest().start(Integer.parseInt(args[0]), 300);
+				MAX_QUERIES = Integer.parseInt(args[0]);
+				new SearchPerformanceTest().start(MAX_QUERIES, THREADS);
 			}
 			catch (NumberFormatException e) {
 				System.out.println("O parâmetro deve ser um inteiro indicando a " +
 								"quantidade máxima de Queries a serem executadas.");
 			}
 		}else {
-			new SearchPerformanceTest().start(300, 20000);
+			new SearchPerformanceTest().start(MAX_QUERIES, THREADS);
 			
 		}
 		
@@ -51,7 +54,7 @@ public class SearchPerformanceTest {
 
 	public long start(int maxQueries, int threads) throws InterruptedException, ExecutionException, IOException, KeeperException {
 		
-		QueryFileReader reader = new QueryFileReader(new File(QUERIES_FILE_PATH), maxQueries);
+		QueryFileReader reader = new QueryFileReader(QUERIES_FILE, maxQueries);
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 
 		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
@@ -79,7 +82,7 @@ public class SearchPerformanceTest {
 	private class QueriesRunner implements Callable<Integer> {
 		private final QueryFileReader reader;
 		private final TextSearcherClient searcher;
-		private int i = 0;
+		private int queriesCount = 0;
 
 		public QueriesRunner(TextSearcherClient searcher, QueryFileReader reader) {
 			this.searcher = searcher;
@@ -96,18 +99,19 @@ public class SearchPerformanceTest {
 														.build();
 					
 					List<String> returnedFields = new ArrayList<String>();
+					returnedFields.add(Metadata.AUTHOR.getValue());
 					returnedFields.add(Metadata.TITLE.getValue());
 					returnedFields.add(Metadata.PUBLICATION_DATE.getValue());
 					returnedFields.add(Metadata.CONTENT.getValue());
 
 					SearchResult searchResult = searcher.search(query, returnedFields , 1, 10, null);
-					i++;
+					queriesCount++;
 					System.out.println(searchResult.getCodigo() +" hits para busca por "+ word);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return i;
+			return queriesCount;
 		}
 	}
 

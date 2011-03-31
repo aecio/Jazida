@@ -21,7 +21,7 @@ if [ $1 = "search" ]; then
 fi
 if [ $1 = "indexWikiFile" ]; then
   echo "Iniciando indexação de arquivo de textos da Wikipedia"
-  exec -a JazidaClient java -classpath $CLASSPATH br.edu.ifpi.jazida.extras.WikipediaFileIndexer $2 $3
+  exec -a JazidaClient java -classpath $CLASSPATH br.edu.ifpi.jazida.extras.WikipediaFileIndexer $2 $3 $4
   exit 1
 fi
 if [ $1 = "searchPerformanceTest" ]; then

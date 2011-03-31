@@ -16,12 +16,12 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.zookeeper.KeeperException;
 
+import br.edu.ifpi.jazida.cluster.ClusterService;
 import br.edu.ifpi.jazida.exception.NoNodesAvailableException;
 import br.edu.ifpi.jazida.node.NodeStatus;
 import br.edu.ifpi.jazida.node.protocol.IImageIndexerProtocol;
 import br.edu.ifpi.jazida.writable.BufferedImageWritable;
 import br.edu.ifpi.jazida.writable.MetaDocumentWritable;
-import br.edu.ifpi.jazida.zkservice.ZookeeperService;
 import br.edu.ifpi.opala.indexing.ImageIndexer;
 import br.edu.ifpi.opala.utils.MetaDocument;
 import br.edu.ifpi.opala.utils.ReturnMessage;
@@ -31,10 +31,10 @@ public class ImageIndexerClient implements ImageIndexer {
 	private static final Logger LOG = Logger.getLogger(ImageIndexerClient.class);
 	private static Configuration HADOOP_CONFIGURATION = new Configuration();
 	private HashMap<String,IImageIndexerProtocol> proxyMap = new HashMap<String, IImageIndexerProtocol>();
-	private ZookeeperService zkService;
+	private ClusterService zkService;
 
 	public ImageIndexerClient() throws KeeperException, InterruptedException, IOException {
-		zkService = new ZookeeperService(new RoundRobinPartitionPolicy());
+		zkService = new ClusterService(new RoundRobinPartitionPolicy());
 		List<NodeStatus> datanodes = zkService.getDataNodes();
 		if (datanodes.size()==0) 
 			throw new NoNodesAvailableException("Nenhum DataNode conectado ao ZookeeperService.");

@@ -1,9 +1,11 @@
 package br.edu.ifpi.jazida.extras;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -12,24 +14,24 @@ import br.edu.ifpi.jazida.client.TextIndexerClient;
 import br.edu.ifpi.jazida.extras.WikipediaFileReader.WikiDocument;
 
 public class WikipediaFileIndexer {
-	private static int threads = 300;
-	private static int maxLines = 5000;
-	private static File fileName = new File("./sample-data/wikipedia.lines.txt");
 
-	private int indexedDocs = 0;
+	private static File fileName = new File("./sample-data/wikipedia.lines.txt");
+	private static int numDocs = 5000;
+	private static int threads = 100;
+
+	private int totalDocs = 0;
 	private TextIndexerClient indexer;
+	private WikipediaFileReader wikiFile;
 
 	public static void main(String[] args) throws Exception {
 		if(args.length>0) {
-
 			fileName = new File(args[0]);
-			maxLines = Integer.parseInt(args[1]);
+			numDocs = Integer.parseInt(args[1]);
 			threads = Integer.parseInt(args[2]);
-			
-			new WikipediaFileIndexer().start(fileName, maxLines, threads);
+			new WikipediaFileIndexer().start(fileName, numDocs, threads);
 			
 		}else {
-			new WikipediaFileIndexer().start(fileName, maxLines, threads);
+			new WikipediaFileIndexer().start(fileName, numDocs, threads);
 		}
 		System.exit(1);
 	}
@@ -38,51 +40,51 @@ public class WikipediaFileIndexer {
 		indexer = new TextIndexerClient();
 	}
 	
-	public long start(File fileName, int maxLines, int threads) throws Exception {
+	public long start(File fileName, int maxLines, int threads)
+	throws IOException, InterruptedException, ExecutionException {
 		
-		WikipediaFileReader wikiFile = new WikipediaFileReader(fileName, maxLines);
-		
+		wikiFile = new WikipediaFileReader(fileName);
 		ExecutorService executor = Executors.newCachedThreadPool();
-		
-		long inicio = System.currentTimeMillis();
 		List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
 		
+		long inicio = System.currentTimeMillis();
 		for(int i=0;i<threads;i++) {
-			Future<Integer> future = executor.submit(new IndexerTask(indexer, wikiFile));
+			Future<Integer> future = executor.submit(new IndexerTask());
 			futures.add(future);
 		}
-		int totalDocumentos = 0;
 		for(Future<Integer> result: futures) {
-			Integer numDocs = result.get();
-			totalDocumentos += numDocs;
+			result.get();
 		}
 		long tempoDeExecucao = (System.currentTimeMillis() - inicio);
 		
-		System.out.println(totalDocumentos+" documentos indexados em "+tempoDeExecucao+" ms");
-		System.out.println("Througput: "+(totalDocumentos/(tempoDeExecucao/1000.0))+" docs/seg");
+		System.out.println(totalDocs+" documentos indexados em "+tempoDeExecucao+" ms");
+		System.out.println("Througput: "+(totalDocs/(tempoDeExecucao/1000.0))+" docs/seg");
 		
 		return tempoDeExecucao;
 	}
 
-	class IndexerTask implements Callable<Integer>{
-		private final TextIndexerClient indexer;
-		private final WikipediaFileReader wikiFile;
-		private int docs = 0;
-		
-		public IndexerTask(TextIndexerClient indexer, WikipediaFileReader wikiFile) {
-			this.indexer = indexer;
-			this.wikiFile = wikiFile;
+	public synchronized WikiDocument next() {
+		try {
+			if(totalDocs < numDocs ) {
+				totalDocs++;
+				return wikiFile.nextDocument();
+			}
+			else {
+				return null;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
+	}
+	
+	class IndexerTask implements Callable<Integer>{
 		@Override
 		public Integer call() throws Exception {
 			WikiDocument doc;
-			while((doc = wikiFile.nextDocument()) != null) {
+			while((doc = next()) != null) {
 				indexer.addText(doc.getMetadoc(), doc.getContent());
-				docs++;
-				indexedDocs++;
 			}
-			return docs;
+			return null;
 		}
 		
 	}

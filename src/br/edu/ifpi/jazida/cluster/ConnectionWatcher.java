@@ -1,4 +1,4 @@
-package br.edu.ifpi.jazida.zkservice;
+package br.edu.ifpi.jazida.cluster;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
