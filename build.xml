@@ -57,6 +57,7 @@
 	<!-- Cria o arquivo .jar do Jazida -->
 	<target name="create-jar" depends="compile" description="Cria o arquivo .jar contendo os arquivos .classe e .java">
 		<echo>Iniciando criação do jar</echo>
+		<mkdir dir="${dir.dist}" />
 		<jar destfile="${dir.dist}/${jar.name}" compress="true">
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
