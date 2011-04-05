@@ -137,9 +137,9 @@
 	<!-- Executa testes, cria o arquivo jar, gera javadoc e cria arquivo de distribuição do Jazida -->
 	<target name="build">
 		<antcall target="test" />
+		<antcall target="create-dist" />
 		<antcall target="create-jar" />
 		<antcall target="javadoc" />
-		<antcall target="create-dist" />
 		<echo>Build finalizado.</echo>
 	</target>
 </project>
